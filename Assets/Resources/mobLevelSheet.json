@@ -1,0 +1,340 @@
+{
+    "version": "0.1",
+    "mobs": [
+        {
+            "name": "Paddle_Fish",
+            "displayName": "划水魚",
+            "description": "划水~ 划水~",
+            "woodCost": 5,
+            "meatCost": 2,
+            
+            "mobSpriteName": "Paddle_Fish_Sprite",
+            "rarity": "Common",
+            "levels": [
+                {
+                    "level": 1,
+                    "health": 50,
+                    "damage": 5,
+                    "speed": 5,
+                    "range": 1,
+                    "fireRate": 1
+                },
+                {
+                    "level": 2,
+                    "health": 55,
+                    "damage": 7,
+                    "speed": 5,
+                    "range": 1,
+                    "fireRate": 1
+                },
+                {
+                    "level": 3,
+                    "health": 60,
+                    "damage": 10,
+                    "speed": 5,
+                    "range": 1,
+                    "fireRate": 1
+                },
+                {
+                    "level": 4,
+                    "health": 65,
+                    "damage": 12,
+                    "speed": 5,
+                    "range": 1,
+                    "fireRate": 1
+                },
+                {
+                    "level": 5,
+                    "health": 70,
+                    "damage": 15,
+                    "speed": 5,
+                    "range": 1,
+                    "fireRate": 1
+                },
+                {
+                    "level": 6,
+                    "health": 75,
+                    "damage": 17,
+                    "speed": 5,
+                    "range": 1,
+                    "fireRate": 1
+                },
+                {
+                    "level": 7,
+                    "health": 80,
+                    "damage": 20,
+                    "speed": 5,
+                    "range": 1,
+                    "fireRate": 1
+                }
+            ]
+        }
+    ],
+    "towers": [
+        {
+            "displayName": "戰士塔",
+            "name": "Warrior_Tower",
+            "woodCost": 10,
+            "meatCost": 5,
+            "rarity": "Common",
+            "blueSpriteName": "Tower_Sprite_Blue",
+            "redSpriteName": "Tower_Sprite_Red",
+            "maxPop": 3,
+            "levels": [
+                {
+                    "level": 1,
+                    "health": 100,
+                    "damage": 10,
+                    "range": 5,
+                    "fireRate": 1.0,
+                    "towerRange": 5,
+                    "towerHealth": 200
+                },
+                {
+                    "level": 2,
+                    "health": 120,
+                    "damage": 15,
+                    "range": 6,
+                    "fireRate": 1.1,
+                    "towerRange": 5,
+                    "towerHealth": 200
+                },
+                {
+                    "level": 3,
+                    "health": 140,
+                    "damage": 20,
+                    "range": 7,
+                    "fireRate": 1.1,
+                    "towerRange": 5,
+                    "towerHealth": 200
+                },
+                {
+                    "level": 4,
+                    "health": 160,
+                    "damage": 25,
+                    "range": 8,
+                    "fireRate": 1.2,
+                    "towerRange": 5,
+                    "towerHealth": 200
+                },
+                {
+                    "level": 5,
+                    "health": 180,
+                    "damage": 30,
+                    "range": 9,
+                    "fireRate": 1.2,
+                    "towerRange": 5,
+                    "towerHealth": 200
+                },
+                {
+                    "level": 6,
+                    "health": 200,
+                    "damage": 35,
+                    "range": 10,
+                    "fireRate": 1.3,
+                    "towerRange": 5,
+                    "towerHealth": 200
+                },
+                {
+                    "level": 7,
+                    "health": 220,
+                    "damage": 40,
+                    "range": 11,
+                    "fireRate": 1.5,
+                    "towerRange": 5,
+                    "towerHealth": 200
+                }
+            ]
+        },
+        {
+            "displayName": "小屋",
+            "name": "House",
+            "woodCost": 25,
+            "meatCost": 0,
+            "rarity": "Common",
+            "blueSpriteName": "House_Sprite_Blue",
+            "redSpriteName": "House_Sprite_Red",
+            "maxPop": 1,
+            "levels":[
+                {
+
+                    "level": 1,
+                    "health": 50,
+                    "towerHealth": 250,
+                    "towerRange": 0,
+                    "damage": 0,
+                    "range": 0,
+                    "fireRate": 0
+                },
+                {
+                    "level": 2,
+                    "health": 60,
+                    "towerHealth": 300,
+                    "towerRange": 0,
+                    "damage": 0,
+                    "range": 0,
+                    "fireRate": 0
+                },
+                {
+                    "level": 3,
+                    "health": 70,
+                    "towerHealth": 350,
+                    "towerRange": 0,
+                    "damage": 0,
+                    "range": 0,
+                    "fireRate": 0
+                },
+                {
+                    "level": 4,
+                    "health": 80,
+                    "towerHealth": 400,
+                    "towerRange": 0,
+                    "damage": 0,
+                    "range": 0,
+                    "fireRate": 0
+                },
+                {
+                    "level": 5,
+                    "health": 90,
+                    "towerHealth": 450,
+                    "towerRange": 0,
+                    "damage": 0,
+                    "range": 0,
+                    "fireRate": 0
+                },
+                {
+                    "level": 6,
+                    "health": 100,
+                    "towerHealth": 500,
+                    "towerRange": 0,
+                    "damage": 0,
+                    "range": 0,
+                    "fireRate": 0
+                },
+                {
+                    "level": 7,
+                    "health": 110,
+                    "towerHealth": 600,
+                    "towerRange": 0,
+                    "damage": 0,
+                    "range": 0,
+                    "fireRate": 0
+                }
+            ]
+
+        },
+        {
+            "displayName": "弓箭手塔",
+            "name": "Archer_Tower",
+            "woodCost": 15,
+            "meatCost": 10,
+            "rarity": "Common",
+            "blueSpriteName": "Tower_Sprite_Blue",
+            "redSpriteName": "Tower_Sprite_Red",
+            "maxPop": 3,
+            "levels": [
+                {
+                    "level": 1,
+                    "health": 100,
+                    "damage": 10,
+                    "range": 5,
+                    "fireRate": 1.0,
+                    "towerRange": 5,
+                    "towerHealth": 200
+                },
+                {
+                    "level": 2,
+                    "health": 120,
+                    "damage": 15,
+                    "range": 6,
+                    "fireRate": 1.1,
+                    "towerRange": 5,
+                    "towerHealth": 200
+                },
+                {
+                    "level": 3,
+                    "health": 140,
+                    "damage": 20,
+                    "range": 7,
+                    "fireRate": 1.1,
+                    "towerRange": 5,
+                    "towerHealth": 200
+                },
+                {
+                    "level": 4,
+                    "health": 160,
+                    "damage": 25,
+                    "range": 8,
+                    "fireRate": 1.2,
+                    "towerRange": 5,
+                    "towerHealth": 200
+                },
+                {
+                    "level": 5,
+                    "health": 180,
+                    "damage": 30,
+                    "range": 9,
+                    "fireRate": 1.2,
+                    "towerRange": 5,
+                    "towerHealth": 200
+                },
+                {
+                    "level": 6,
+                    "health": 200,
+                    "damage": 35,
+                    "range": 10,
+                    "fireRate": 1.3,
+                    "towerRange": 5,
+                    "towerHealth": 200
+                },
+                {
+                    "level": 7,
+                    "health": 220,
+                    "damage": 40,
+                    "range": 11,
+                    "fireRate": 1.5,
+                    "towerRange": 5,
+                    "towerHealth": 200
+                }
+            ]
+        }
+    ],
+    "levels":[
+        {
+            "level": 1,
+            "coinCost": 100,
+            "cardCost": 4
+        },
+        {
+            "level": 2,
+            "coinCost": 250,
+            "cardCost": 10
+        },
+        {
+            "level": 3,
+            "coinCost": 500,
+            "cardCost": 20
+        },
+        {
+            "level": 4,
+            "coinCost": 1000,
+            "cardCost": 30
+        },
+        {
+            "level": 5,
+            "coinCost": 2000,
+            "cardCost": 50
+        },
+        {
+            "level": 6,
+            "coinCost": 5000,
+            "cardCost": 75
+        },
+        {
+            "level": 7,
+            "coinCost": 10000,
+            "cardCost": 150
+        }
+    ]     
+    
+}
