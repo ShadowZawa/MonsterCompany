@@ -4,6 +4,7 @@ using UnityEngine;
 public class CastleModel : MonoBehaviour
 {
     public Team team;
+    public int getHealth => currentHealth;
     private int currentHealth;
     public int maxHealth=1000;
     void Start() {

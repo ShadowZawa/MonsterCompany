@@ -18,9 +18,16 @@ public class UIManager : MonoBehaviour
     public GameObject Towerpanel;
     public GameObject Mobpanel;
 
+    [Header("Detail Info Panel")]
+    public GameObject detailPanel;
+    public DetailUIModel detailUI;
+
     [Header("Game Systems")]
     public TowerBuilder towerBuilder;
     public MobManager mobManager;
+    
+    private GameObject currentSelectedObject;
+    private Camera mainCamera;
 
     private void Start()
     {
@@ -29,8 +36,46 @@ public class UIManager : MonoBehaviour
         EventBus.Instance.Subscribe<CurrencyUpdateEvent>(e => UpdateUI());
         UpdateUI();
         
+        mainCamera = Camera.main;
+        if (detailPanel != null)
+            detailPanel.SetActive(false);
+        
         // 等待其他管理器初始化完成後創建按鈕
         Invoke("InitializeUI", 0.1f);
+    }
+    
+    void Update()
+    {
+        // 處理點擊檢測
+        if (Input.GetMouseButtonDown(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began))
+        {
+            Vector3 screenPosition;
+            if (Input.touchCount > 0)
+                screenPosition = Input.GetTouch(0).position;
+            else
+                screenPosition = Input.mousePosition;
+                
+            // 檢查是否點擊到UI
+            if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+                return;
+                
+            Vector3 worldPosition = mainCamera.ScreenToWorldPoint(screenPosition);
+            worldPosition.z = 0;
+            
+            // 使用射線檢測點擊的物件
+            RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero);
+            
+            if (hit.collider != null)
+            {
+                Debug.Log(hit.collider.gameObject.name);
+                GameObject clickedObject = hit.collider.gameObject;
+                ShowDetailInfo(clickedObject);
+            }
+            else
+            {
+                HideDetailInfo();
+            }
+        }
     }
     public void TriggerUI(int index)
     {
@@ -197,5 +242,146 @@ public class UIManager : MonoBehaviour
         
         // 添加點擊事件
         startBoatButton.onClick.AddListener(() => mobManager.StartBoat());
+    }
+    
+    void ShowDetailInfo(GameObject obj)
+    {
+        currentSelectedObject = obj;
+        
+        if (detailPanel == null || detailUI == null)
+            return;
+        
+        // 關閉其他面板
+        Towerpanel.SetActive(false);
+        Mobpanel.SetActive(false);
+        
+        // 顯示詳細資訊面板
+        detailPanel.SetActive(true);
+        
+        string description = GetObjectDescription(obj);
+        detailUI.Description.text = description;
+        
+        // 設置按鈕功能
+        SetupDetailButtons(obj);
+    }
+    
+    void HideDetailInfo()
+    {
+        if (detailPanel != null)
+            detailPanel.SetActive(false);
+        currentSelectedObject = null;
+    }
+    
+    string GetObjectDescription(GameObject obj)
+    {
+        string description = "";
+        
+        // 檢測EnemyAI組件（Mob）
+        EnemyAI enemy = obj.GetComponent<EnemyAI>();
+        if (enemy != null)
+        {
+            description += $"單位類型: 怪物\n";
+            description += $"隊伍: {enemy.team}\n";
+            description += $"血量: {enemy.getCurrentHealth}/{enemy.maxHealth}\n";
+            description += $"攻擊力: {enemy.damage}\n";
+            description += $"移動速度: {enemy.moveSpeed}\n";
+            description += $"攻擊範圍: {enemy.attackRadius}";
+            return description;
+        }
+        
+        // 檢測HouseController組件（House Tower）
+        HouseController house = obj.GetComponent<HouseController>();
+        if (house != null)
+        {
+            description += $"建築類型: 房屋\n";
+            description += $"隊伍: {house.team}\n";
+            description += $"血量: {house.getHealth}/{house.maxHealth}\n";
+            description += $"農民血量: {house.farmerHealth}\n";
+            description += $"農民攻擊力: {house.farmerDamage}\n";
+            description += $"採集速度: {house.farmerCollectSpeed}s\n";
+            description += $"目標資源: {(house.farmerTarget == FarmerTargetType.meat ? "肉類" : "木材")}";
+            return description;
+        }
+        
+        // 檢測其他塔類型組件
+        var archerTower = obj.GetComponent<ArcherTowerController>();
+        if (archerTower != null)
+        {
+            description += $"建築類型: 弓箭塔\n";
+            description += $"隊伍: {archerTower.team}\n";
+            description += $"血量: {archerTower.getHealth}/{archerTower.maxHealth}\n";
+            description += $"塔範圍: {archerTower.towerRadius}\n";
+            description += $"士兵血量: {archerTower.soilderHealth}\n";
+            description += $"士兵攻擊力: {archerTower.soilderDamage}\n";
+            description += $"士兵攻擊範圍: {archerTower.soilderAttackRange}";
+            return description;
+        }
+        
+        var warriorTower = obj.GetComponent<WarriorTowerController>();
+        if (warriorTower != null)
+        {
+            description += $"建築類型: 戰士塔\n";
+            description += $"隊伍: {warriorTower.team}\n";
+            description += $"血量: {warriorTower.getHealth}/{warriorTower.maxHealth}\n";
+            description += $"塔範圍: {warriorTower.towerRadius}\n";
+            description += $"士兵血量: {warriorTower.soilderHealth}\n";
+            description += $"士兵攻擊力: {warriorTower.soilderDamage}";
+            return description;
+        }
+        
+        // 檢測FarmerAI組件（農民）
+        FarmerAI farmer = obj.GetComponent<FarmerAI>();
+        if (farmer != null)
+        {
+            description += $"單位類型: 農民\n";
+            description += $"隊伍: {farmer.team}\n";
+            description += $"血量: {farmer.getCurrentHealth}\n";
+            description += $"目標資源: {(farmer.targetType == FarmerTargetType.meat ? "肉類" : "木材")}";
+            return description;
+        }
+        CastleModel castle = obj.GetComponent<CastleModel>();
+        if (castle != null)
+        {
+            description += $"單位類型: 主堡\n";
+            description += $"隊伍: {castle.team}\n";
+            description += $"血量: {castle.getHealth}/{castle.maxHealth}\n";
+            return description;
+        }
+        
+        return $"物件名稱: {obj.name}\n無詳細資訊";
+    }
+    
+    void SetupDetailButtons(GameObject obj)
+    {
+        // 清除所有按鈕事件
+        detailUI.useBtn.onClick.RemoveAllListeners();
+        // 檢查是否為House Tower，如果是則顯示模式切換按鈕
+        HouseController house = obj.GetComponent<HouseController>();
+        if (house != null)
+        {
+            detailUI.useBtn.gameObject.SetActive(true);
+            detailUI.useBtn.GetComponentInChildren<TMPro.TextMeshProUGUI>().text = "切換模式";
+            detailUI.useBtn.onClick.AddListener(() => ToggleFarmerMode(house));
+        }
+        else
+        {
+            //Debug.Log("Not a HouseController");
+            detailUI.useBtn.gameObject.SetActive(false);
+        }
+    }
+    
+    void ToggleFarmerMode(HouseController house)
+    {
+        // 切換農民的目標資源類型
+        house.farmerTarget = (house.farmerTarget == FarmerTargetType.meat) 
+            ? FarmerTargetType.tree 
+            : FarmerTargetType.meat;
+            
+        // 更新顯示資訊
+        ShowDetailInfo(currentSelectedObject);
+        
+        // 顯示切換訊息
+        string newTarget = (house.farmerTarget == FarmerTargetType.meat) ? "肉類" : "木材";
+        MessageBox.instance.ShowMessage($"農民目標已切換為: {newTarget}", Color.green);
     }
 }

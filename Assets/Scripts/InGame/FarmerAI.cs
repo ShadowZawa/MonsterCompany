@@ -23,6 +23,7 @@ public class FarmerAI : MonoBehaviour
     private FarmerState currentState;
     private float moveSpeed = 2f;
     private int health;
+    public int getCurrentHealth => health;
     private int storage = 0;
     private int maxStorage = 10;
     private GameObject currentTarget;

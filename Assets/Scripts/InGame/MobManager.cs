@@ -67,6 +67,9 @@ public class MobManager : MonoBehaviour
         GameManager.instance.costResource(team, ResourceType.Wood, mob.woodCost);
         GameManager.instance.costResource(team, ResourceType.Meat, mob.meatCost);
 
+        // 推送貨幣更新事件
+        EventBus.Instance.Publish(new CurrencyUpdateEvent());
+
         return AddQueue(mob);
     }
 
@@ -87,6 +90,10 @@ public class MobManager : MonoBehaviour
         GameManager.instance.costResource(team, ResourceType.Gold, mob.goldCost);
         GameManager.instance.costResource(team, ResourceType.Wood, mob.woodCost);
         GameManager.instance.costResource(team, ResourceType.Meat, mob.meatCost);
+        
+        // 推送貨幣更新事件
+        EventBus.Instance.Publish(new CurrencyUpdateEvent());
+        
         AddQueue(mob);
     }
     private bool AddQueue(MobModel mob)

@@ -14,6 +14,7 @@ public class EnemyAI : MonoBehaviour
 {
     private EnemyState currentState = EnemyState.Idle;
     private int currentHealth;
+    public int getCurrentHealth => currentHealth;
     private Animator _animator;
     public Team team=Team.Blue;
     public int maxHealth = 50;
