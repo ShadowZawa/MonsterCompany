@@ -3,7 +3,10 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Unity.VisualScripting;
-
+/*
+    幫我重建TowerBuilder放置Tower的判定 只能放在Tile[name=Buildable]上
+    並且每個Tower上面都會有collider了
+*/
 public class TowerModel
 {
     public GameObject towerPrefab;
@@ -78,7 +81,14 @@ public class TowerBuilder : MonoBehaviour
     private Vector2 lastValidPosition;    // 最後一個有效的位置
 
     private Camera mainCamera;
-
+    public void setCurrentTower(TowerModel tower)
+    {
+        currentTower = tower;
+    }
+    public TowerModel getTowerByName(string towerName)
+    {
+        return System.Array.Find(towers, t => t.towerPrefab.name == towerName);
+    }   
     void Start()
     {
         mainCamera = Camera.main;
@@ -142,45 +152,46 @@ public class TowerBuilder : MonoBehaviour
         }
     }
 
-    private bool IsValidBuildPosition(Vector2 pos)
+    public bool IsValidBuildPosition(Vector2 pos)
     {
         // 1. x軸上下限制
         if (pos.x < minX || pos.x > maxX)
             return false;
 
-        Vector3 offset = new Vector3(1, 2, 0);
-        // 2. 檢查建築範圍每格都有 tile
-        if (buildTilemap != null)
-        {
-            for (int x = 0; x < currentTower.towerWidth; x++)
-            {
-                for (int y = 0; y < currentTower.towerHeight; y++)
-                {
-                    Vector3 checkWorldPos = new Vector3(pos.x + x-offset.x, pos.y-offset.y + y, 0);
-                    var cellPos = buildTilemap.WorldToCell(checkWorldPos);
-                    if (buildTilemap.GetTile(cellPos) == null)
-                        return false;
-                }
-            }
-        }
-        else
-        {
+        // 2. 檢查建築範圍每格的Tile必須在Buildable tilemap有tile
+        if (buildTilemap == null || currentTower == null)
             return false;
-        }
 
-        // 3. 用座標比對判斷是否與其他建築重疊（搜尋 Blue, Meat, Tree tag）
-        string[] overlapTags = { team == Team.Blue ? "Blue" : "Red", "Meat", "Tree" };
-        Rect newRect = new Rect(pos.x - offset.x, pos.y - offset.y, currentTower.towerWidth, currentTower.towerHeight);
-        foreach (string tag in overlapTags)
+        Vector2 offset = new Vector2(1, 2); // 根據tower尺寸調整
+        for (int x = 0; x < currentTower.towerWidth; x++)
         {
-            GameObject[] objs = GameObject.FindGameObjectsWithTag(tag);
-            foreach (GameObject obj in objs)
+            for (int y = 0; y < currentTower.towerHeight; y++)
             {
-                Vector3 objPos = obj.transform.position - offset;
-                Rect objRect = new Rect(objPos.x, objPos.y, currentTower.towerWidth, currentTower.towerHeight);
-                if (newRect.Overlaps(objRect))
+                Vector3 checkWorldPos = new Vector3(pos.x + x - offset.x, pos.y - offset.y + y, 0);
+                var cellPos = buildTilemap.WorldToCell(checkWorldPos);
+                var tile = buildTilemap.GetTile(cellPos);
+                if (tile == null)
                     return false;
             }
+        }
+
+        // 3. 檢查Collider重疊（使用Prefab的Collider設定）
+        if (currentTower.towerPrefab == null)
+            return false;
+
+        Collider2D prefabCollider = currentTower.towerPrefab.GetComponent<Collider2D>();
+        if (prefabCollider == null)
+            return false;
+
+        // 計算放置後Collider的中心與大小
+        Vector2 colliderOffset = prefabCollider.offset;
+        Vector2 colliderSize = prefabCollider.bounds.size;
+        Vector2 checkCenter = (Vector2)pos + colliderOffset;
+        Collider2D[] colliders = Physics2D.OverlapBoxAll(checkCenter, colliderSize, 0f);
+        foreach (var col in colliders)
+        {
+            if (col.gameObject.CompareTag("Tower"))
+                return false;
         }
 
         return true;
@@ -234,7 +245,7 @@ public class TowerBuilder : MonoBehaviour
     public bool BuildTowerAt(string towerName, Vector3 position)
     {
         // 找到對應的塔
-        TowerModel tower = System.Array.Find(towers, t => t.towerPrefab.name == towerName);
+        TowerModel tower = getTowerByName(towerName);
         if (tower == null) return false;
 
         // 檢查位置是否有效
@@ -245,6 +256,7 @@ public class TowerBuilder : MonoBehaviour
         || GameManager.instance.getResource(team, ResourceType.Meat) < tower.meatCost
         || GameManager.instance.getResource(team, ResourceType.Gold) < tower.goldCost)
         {
+            print("資源不足，無法建造！");
             return false;
         }
 

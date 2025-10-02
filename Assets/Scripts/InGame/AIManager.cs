@@ -13,7 +13,9 @@ public class AIAction
 
     public ActionType type;
     public string unitName;  // 塔或怪物的名稱
-    public int requiredResource;  // 需要的資源數量
+    public int goldCost;     // 需要的金
+    public int woodCost;     // 需要的木
+    public int meatCost;     // 需要的肉
     public Vector2 position;  // 建造位置（如果是固定位置）
 }
 
@@ -50,9 +52,8 @@ public class AIManager : MonoBehaviour
             mobManager.isAI = true;
         }
 
-        StartCoroutine(AIRoutine());
-        LoadPhaseConfig(); // 讀取關卡配置
-        UpdateBuildPositions(); // 更新可建造位置
+    LoadPhaseConfig(); // 讀取關卡配置
+    StartCoroutine(AIRoutine());
     }
 
     void LoadPhaseConfig()
@@ -66,7 +67,7 @@ public class AIManager : MonoBehaviour
                 new AIAction { 
                     type = AIAction.ActionType.BuildTower,
                     unitName = "Basic_Tower",
-                    requiredResource = 100,
+                    goldCost = 100,
                     position = new Vector2(10, 5)
                 }
             },
@@ -75,98 +76,95 @@ public class AIManager : MonoBehaviour
                 new AIAction {
                     type = AIAction.ActionType.SpawnMob,
                     unitName = "Paddle_Shark",
-                    requiredResource = 50
+                    goldCost = 50
                 },
                 new AIAction {
                     type = AIAction.ActionType.BuildTower,
                     unitName = "Basic_Tower",
-                    requiredResource = 150
+                    goldCost = 150
                 }
             },
             resourceThreshold = 50
         };
     }
 
-    void UpdateBuildPositions()
+    Vector2 GetRandomBuildPosition(TowerModel tower)
     {
-        if (towerBuilder == null || towerBuilder.buildTilemap == null || towerBuilder.towers == null) return;
+        if (towerBuilder == null || towerBuilder.buildTilemap == null || tower == null)
+            return Vector2.zero;
 
-        // 清除現有位置列表
-        availableBuildPositions.Clear();
-
-        // 從 TowerBuilder 的 buildTilemap 獲取可建造的位置
+        towerBuilder.setCurrentTower(tower);
+        List<Vector2> validPositions = new List<Vector2>();
         var tilemap = towerBuilder.buildTilemap;
         BoundsInt bounds = tilemap.cellBounds;
 
-        // 計算最大的塔尺寸，用於檢查建造空間
-        int maxTowerWidth = 1;
-        int maxTowerHeight = 1;
-        foreach (var tower in towerBuilder.towers)
+        // 逐格檢查tilemap範圍
+        for (int x = bounds.xMin; x < bounds.xMax; x++)
         {
-            maxTowerWidth = Mathf.Max(maxTowerWidth, tower.towerWidth);
-            maxTowerHeight = Mathf.Max(maxTowerHeight, tower.towerHeight);
-        }
-
-        for (int x = bounds.min.x; x < bounds.max.x - maxTowerWidth + 1; x++)
-        {
-            for (int y = bounds.min.y; y < bounds.max.y - maxTowerHeight + 1; y++)
+            for (int y = bounds.yMin; y < bounds.yMax; y++)
             {
-                // 檢查這個位置是否有足夠的空間放置最大的塔
-                bool isValidPosition = true;
-                for (int dx = 0; dx < maxTowerWidth && isValidPosition; dx++)
+                Vector3Int cellPos = new Vector3Int(x, y, 0);
+                Vector3 worldPos = tilemap.CellToWorld(cellPos) + tilemap.tileAnchor;
+                if (tilemap.GetTile(cellPos) == null)
+                    continue;
+                if (towerBuilder.IsValidBuildPosition(worldPos))
                 {
-                    for (int dy = 0; dy < maxTowerHeight && isValidPosition; dy++)
-                    {
-                        Vector3Int checkPosition = new Vector3Int(x + dx, y + dy, 0);
-                        if (!tilemap.HasTile(checkPosition))
-                        {
-                            isValidPosition = false;
-                        }
-                    }
-                }
-
-                if (isValidPosition)
-                {
-                    Vector2 worldPosition = tilemap.CellToWorld(new Vector3Int(x, y, 0));
-                    // 檢查該位置是否在建造區域限制內
-                    if (worldPosition.x >= towerBuilder.minX && worldPosition.x <= towerBuilder.maxX)
-                    {
-                        // 檢查是否已經有塔在這個位置
-                        Collider2D[] colliders = Physics2D.OverlapBoxAll(worldPosition, 
-                            new Vector2(maxTowerWidth * towerBuilder.gridSize, maxTowerHeight * towerBuilder.gridSize), 
-                            0f, 
-                            towerBuilder.buildBlockLayer);
-
-                        if (colliders.Length == 0)
-                        {
-                            availableBuildPositions.Add(worldPosition);
-                        }
-                    }
+                    validPositions.Add(worldPos);
                 }
             }
         }
+
+        // 隨機選取一個可用位置
+        if (validPositions.Count > 0)
+        {
+            int idx = UnityEngine.Random.Range(0, validPositions.Count);
+            return validPositions[idx];
+        }
+        return Vector2.zero;
+
     }
 
-    Vector2 GetRandomBuildPosition()
-    {
-        if (availableBuildPositions.Count == 0)
-            return Vector2.zero;
-        
-        int index = UnityEngine.Random.Range(0, availableBuildPositions.Count);
-        return availableBuildPositions[index];
-    }
 
     IEnumerator AIRoutine()
     {
         while (true)
         {
+            // Debug: 顯示目前階段與資源
+            string phase = initialActionsComplete ? "隨機階段" : "初始階段";
+            string actionInfo = "";
+            if (!initialActionsComplete)
+            {
+                if (currentActionIndex < currentPhase.initialActions.Length)
+                {
+                    AIAction action = currentPhase.initialActions[currentActionIndex];
+                    actionInfo = $"目標: {action.type} {action.unitName} 需求資源: Gold={action.goldCost}, Wood={action.woodCost}, Meat={action.meatCost}";
+                }
+                else
+                {
+                    actionInfo = "初始動作已完成";
+                }
+            }
+            else
+            {
+                AIAction randomAction = currentPhase.randomActions[UnityEngine.Random.Range(0, currentPhase.randomActions.Length)];
+                actionInfo = $"目標: {randomAction.type} {randomAction.unitName} 需求資源: Gold={randomAction.goldCost}, Wood={randomAction.woodCost}, Meat={randomAction.meatCost}";
+            }
+
+            int gold = GameManager.instance.getResource(team, ResourceType.Gold);
+            int wood = GameManager.instance.getResource(team, ResourceType.Wood);
+            int meat = GameManager.instance.getResource(team, ResourceType.Meat);
+            Debug.Log($"[AIManager] 階段: {phase} | {actionInfo} | 資源: Gold={gold}, Wood={wood}, Meat={meat}");
+
             if (!initialActionsComplete)
             {
                 // 執行開場固定動作
                 if (currentActionIndex < currentPhase.initialActions.Length)
                 {
                     AIAction action = currentPhase.initialActions[currentActionIndex];
-                    if (GameManager.instance.getResource(team, ResourceType.Gold) >= action.requiredResource)
+                    bool canDo = gold >= action.goldCost
+                        && wood >= action.woodCost
+                        && meat >= action.meatCost;
+                    if (canDo)
                     {
                         ExecuteAction(action);
                         currentActionIndex++;
@@ -179,13 +177,18 @@ public class AIManager : MonoBehaviour
             }
             else
             {
-                // 執行隨機動作
-                if (GameManager.instance.getResource(team, ResourceType.Gold) >= currentPhase.resourceThreshold)
+                AIAction randomAction = currentPhase.randomActions[UnityEngine.Random.Range(0, currentPhase.randomActions.Length)];
+                bool canDo = gold >= randomAction.goldCost
+                    && wood >= randomAction.woodCost
+                    && meat >= randomAction.meatCost;
+                if (canDo)
                 {
-                    AIAction randomAction = currentPhase.randomActions[UnityEngine.Random.Range(0, currentPhase.randomActions.Length)];
-                    if (GameManager.instance.getResource(team, ResourceType.Gold) >= randomAction.requiredResource)
+                    bool success = ExecuteAction(randomAction);
+                    if (success)
                     {
-                        ExecuteAction(randomAction);
+                        // 執行成功才冷卻
+                        yield return new WaitForSeconds(checkInterval);
+                        continue;
                     }
                 }
             }
@@ -194,38 +197,41 @@ public class AIManager : MonoBehaviour
         }
     }
 
-    void ExecuteAction(AIAction action)
+    bool ExecuteAction(AIAction action)
     {
         switch (action.type)
         {
             case AIAction.ActionType.BuildTower:
-                if (towerBuilder == null) break;
+                if (towerBuilder == null) return false;
 
                 Vector2 buildPos = action.position;
                 if (buildPos == Vector2.zero)
                 {
-                    buildPos = GetRandomBuildPosition();
+                    buildPos = GetRandomBuildPosition(towerBuilder.getTowerByName(action.unitName));
                 }
 
                 if (buildPos != Vector2.zero)
                 {
-                    if (towerBuilder.BuildTowerAt(action.unitName, buildPos))
+                    if (towerBuilder.BuildTowerAt(action.unitName, new Vector3(buildPos.x, buildPos.y, 0)))
                     {
                         // 建造成功後，從可用位置列表中移除
-                        availableBuildPositions.Remove(buildPos);
+                        return true;
                     }
+                    print("建造失敗，請檢查建造條件！");
                 }
-                break;
+                return false;
 
             case AIAction.ActionType.SpawnMob:
-                if (mobManager == null) break;
+                if (mobManager == null) return false;
 
                 if (mobManager.EnqueueMobByName(action.unitName))
                 {
                     // 如果怪物成功加入隊列，自動開始出航
                     mobManager.StartBoat();
+                    return true;
                 }
-                break;
+                return false;
         }
+        return false;
     }
 }

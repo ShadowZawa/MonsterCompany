@@ -81,6 +81,11 @@ public class DataBaseManager : MonoBehaviour
             return false;
         }
 
+        /*
+            讀取auth.MobDecks
+            如不存在則建立預設(Warrior_Tower, Archer_Tower)
+            讀取auth.TowerDecks
+        */
         EventBus.Instance.Publish(new CurrencyUpdateEvent());
         MessageBox.instance.ShowMessage("登入成功！", Color.green);
         return true;
