@@ -86,6 +86,7 @@ public class FarmerAI : MonoBehaviour
                 nearest = res;
             }
         }
+        if (Vector3.Distance(transform.position, nearest.transform.position) > 20f) return;
         if (nearest != null)
         {
             currentTarget = nearest;
@@ -101,8 +102,8 @@ public class FarmerAI : MonoBehaviour
             return;
         }
         Vector3 direction = (currentTarget.transform.position - transform.position);
-        direction.y = 0;
-        if (direction.magnitude < 0.3f)
+        //direction.y = 0;
+        if (Vector3.Distance(transform.position, currentTarget.transform.position) < 0.5f)
         {
             currentState = FarmerState.Farming;
             return;

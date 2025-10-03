@@ -4,6 +4,7 @@ using UnityEngine;
 [System.Serializable]
 public class MobModel
 {
+    public string mobName;
     public GameObject mobPrefab;
     public int goldCost;
     public int woodCost;
@@ -19,6 +20,7 @@ public class MobManager : MonoBehaviour
 
     public GameObject Boat;
     public MobModel[] mobs;
+    public bool isShipping = false;
 
     void Start()
     {
@@ -40,6 +42,7 @@ public class MobManager : MonoBehaviour
             var mobData = mobDataList[i];
             mobs[i] = new MobModel
             {
+                mobName = mobData.name,
                 mobPrefab = mobData.prefab,
                 woodCost = mobData.woodCost,
                 meatCost = mobData.meatCost,
@@ -52,14 +55,18 @@ public class MobManager : MonoBehaviour
     public bool EnqueueMobByName(string mobName)
     {
         // 找到對應的怪物
-        MobModel mob = System.Array.Find(mobs, m => m.mobPrefab.name == mobName);
-        if (mob == null) return false;
+        MobModel mob = System.Array.Find(mobs, m => m.mobName == mobName);
+        if (mob == null) {
+            print("找不到怪物：" + mobName);
+            return false;
+        }
 
         if (GameManager.instance.getResource(team, ResourceType.Gold) < mob.goldCost
             || GameManager.instance.getResource(team, ResourceType.Wood) < mob.woodCost
             || GameManager.instance.getResource(team, ResourceType.Meat) < mob.meatCost
         )
         {
+            print("資源不足，無法召喚怪物：" + mobName);
             return false;
         }
 
@@ -98,6 +105,7 @@ public class MobManager : MonoBehaviour
     }
     private bool AddQueue(MobModel mob)
     {
+        if (isShipping) return false;
         if (_mobQueue.Count >= 10) return false;
         int ind = _mobQueue.Count;
         if (ind % 2 == 0)
@@ -128,6 +136,7 @@ public class MobManager : MonoBehaviour
     }
     public void StartBoat()
     {
+        if (isShipping) return;
         if (_mobQueue.Count == 0)
         {
             if (!isAI) // AI模式下不顯示訊息
@@ -136,6 +145,7 @@ public class MobManager : MonoBehaviour
             }
             return;
         }
+        isShipping = true;
         LeanTween.move(Boat, team == Team.Red ? GameManager.instance.blueLoc.transform.position : GameManager.instance.redLoc.transform.position, 15f).setOnComplete(() =>
         {
             //處理怪物
@@ -146,7 +156,10 @@ public class MobManager : MonoBehaviour
             }
 
             _mobQueue.Clear();
-            LeanTween.move(Boat, team == Team.Red ? GameManager.instance.redLoc.transform.position : GameManager.instance.blueLoc.transform.position, 15f);
+            LeanTween.move(Boat, team == Team.Red ? GameManager.instance.redLoc.transform.position : GameManager.instance.blueLoc.transform.position, 15f).setOnComplete(() =>
+            {
+                isShipping = false;
+            });
         });
     }
 

@@ -9,7 +9,7 @@ public class ArcherTowerController : MonoBehaviour
     public Transform spawnPos;
     private int currentHealth;
     public int maxHealth = 100;
-    public float towerRadius = 3;
+    public float towerRadius = 7;
     public int soilderHealth = 30;
     public int soilderDamage = 10;
     public float soilderAttackRange = 5;

@@ -9,7 +9,7 @@ public class WarriorTowerController : MonoBehaviour
     public Transform spawnPos;
     private int currentHealth;
     public int maxHealth = 100;
-    public float towerRadius = 3;
+    public float towerRadius = 5;
     public int soilderHealth = 30;
     public int soilderDamage = 10;
     public int getHealth => currentHealth;

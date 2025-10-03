@@ -29,6 +29,8 @@ public class AIPhase
 
 public class AIManager : MonoBehaviour
 {
+    public Vector2 minPos1;
+    public Vector2 minPos2;
     public Team team = Team.Red;  // AI所屬隊伍
     public TowerBuilder towerBuilder;
     public MobManager mobManager;
@@ -75,7 +77,7 @@ public class AIManager : MonoBehaviour
             {
                 new AIAction {
                     type = AIAction.ActionType.SpawnMob,
-                    unitName = "Paddle_Shark",
+                    unitName = "Paddle_Fish",
                     goldCost = 50
                 },
                 new AIAction {
@@ -96,15 +98,24 @@ public class AIManager : MonoBehaviour
         towerBuilder.setCurrentTower(tower);
         List<Vector2> validPositions = new List<Vector2>();
         var tilemap = towerBuilder.buildTilemap;
-        BoundsInt bounds = tilemap.cellBounds;
+
+        // 只在 minPos1 與 minPos2 的矩形範圍內取 tile
+        float minX = Mathf.Min(minPos1.x, minPos2.x);
+        float maxX = Mathf.Max(minPos1.x, minPos2.x);
+        float minY = Mathf.Min(minPos1.y, minPos2.y);
+        float maxY = Mathf.Max(minPos1.y, minPos2.y);
 
         // 逐格檢查tilemap範圍
+        BoundsInt bounds = tilemap.cellBounds;
         for (int x = bounds.xMin; x < bounds.xMax; x++)
         {
             for (int y = bounds.yMin; y < bounds.yMax; y++)
             {
                 Vector3Int cellPos = new Vector3Int(x, y, 0);
                 Vector3 worldPos = tilemap.CellToWorld(cellPos) + tilemap.tileAnchor;
+                // 檢查是否在指定範圍內
+                if (worldPos.x < minX || worldPos.x > maxX || worldPos.y < minY || worldPos.y > maxY)
+                    continue;
                 if (tilemap.GetTile(cellPos) == null)
                     continue;
                 if (towerBuilder.IsValidBuildPosition(worldPos))
@@ -232,18 +243,19 @@ public class AIManager : MonoBehaviour
                         Debug.Log("建造成功" + buildPos);
                         return true;
                     }
-                    Debug.LogWarning($"建造失敗，條件不符！座標:{buildPos} 塔:{action.unitName} team:{towerBuilder.team}");
+                    //Debug.LogWarning($"建造失敗，條件不符！座標:{buildPos} 塔:{action.unitName} team:{towerBuilder.team}");
                 }
                 return false;
 
             case AIAction.ActionType.SpawnMob:
                 if (mobManager == null) return false;
-
+                print("AI召喚怪物" + action.unitName);
                 if (mobManager.EnqueueMobByName(action.unitName))
                 {
                     mobManager.StartBoat();
                     return true;
                 }
+                print("AI召喚怪物失敗" + action.unitName);
                 return false;
         }
         return false;
