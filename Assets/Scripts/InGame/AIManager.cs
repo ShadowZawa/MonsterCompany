@@ -66,7 +66,7 @@ public class AIManager : MonoBehaviour
             {
                 new AIAction { 
                     type = AIAction.ActionType.BuildTower,
-                    unitName = "Basic_Tower",
+                    unitName = "House",
                     goldCost = 100,
                     position = new Vector2(10, 5)
                 }
@@ -80,7 +80,7 @@ public class AIManager : MonoBehaviour
                 },
                 new AIAction {
                     type = AIAction.ActionType.BuildTower,
-                    unitName = "Basic_Tower",
+                    unitName = "House",
                     goldCost = 150
                 }
             },
@@ -120,6 +120,10 @@ public class AIManager : MonoBehaviour
             int idx = UnityEngine.Random.Range(0, validPositions.Count);
             return validPositions[idx];
         }
+        else
+        {
+            Debug.Log("沒有可用的建造位置");
+        }
         return Vector2.zero;
 
     }
@@ -153,7 +157,7 @@ public class AIManager : MonoBehaviour
             int gold = GameManager.instance.getResource(team, ResourceType.Gold);
             int wood = GameManager.instance.getResource(team, ResourceType.Wood);
             int meat = GameManager.instance.getResource(team, ResourceType.Meat);
-            Debug.Log($"[AIManager] 階段: {phase} | {actionInfo} | 資源: Gold={gold}, Wood={wood}, Meat={meat}");
+            //Debug.Log($"[AIManager] 階段: {phase} | {actionInfo} | 資源: Gold={gold}, Wood={wood}, Meat={meat}");
 
             if (!initialActionsComplete)
             {
@@ -204,20 +208,31 @@ public class AIManager : MonoBehaviour
             case AIAction.ActionType.BuildTower:
                 if (towerBuilder == null) return false;
 
+                TowerModel tower = towerBuilder.getTowerByName(action.unitName);
+                if (tower == null) {
+                    Debug.LogError($"AI建塔失敗：找不到塔 {action.unitName}");
+                    return false;
+                }
+                towerBuilder.setCurrentTower(tower); // 確保currentTower同步
+
                 Vector2 buildPos = action.position;
                 if (buildPos == Vector2.zero)
                 {
-                    buildPos = GetRandomBuildPosition(towerBuilder.getTowerByName(action.unitName));
+                    buildPos = GetRandomBuildPosition(tower);
                 }
 
                 if (buildPos != Vector2.zero)
                 {
-                    if (towerBuilder.BuildTowerAt(action.unitName, new Vector3(buildPos.x, buildPos.y, 0)))
+                    // Debug: 印出建塔資訊
+                    Debug.Log($"AI建塔嘗試：{tower.towerName} at {buildPos} team={towerBuilder.team}");
+                    bool valid = towerBuilder.IsValidBuildPosition(buildPos);
+                    Debug.Log($"IsValidBuildPosition={valid}");
+                    if (valid && towerBuilder.BuildTowerAt(action.unitName, new Vector3(buildPos.x, buildPos.y, 0)))
                     {
-                        // 建造成功後，從可用位置列表中移除
+                        Debug.Log("建造成功" + buildPos);
                         return true;
                     }
-                    print("建造失敗，請檢查建造條件！");
+                    Debug.LogWarning($"建造失敗，條件不符！座標:{buildPos} 塔:{action.unitName} team:{towerBuilder.team}");
                 }
                 return false;
 
@@ -226,7 +241,6 @@ public class AIManager : MonoBehaviour
 
                 if (mobManager.EnqueueMobByName(action.unitName))
                 {
-                    // 如果怪物成功加入隊列，自動開始出航
                     mobManager.StartBoat();
                     return true;
                 }

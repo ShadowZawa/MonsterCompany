@@ -780,6 +780,7 @@ MonoBehaviour:
   minX: 30
   maxX: 55
   buildTilemap: {fileID: 2107338665}
+  walkableTilemap: {fileID: 0}
   isAI: 0
   team: 1
   gridSize: 1
@@ -1376,6 +1377,7 @@ MonoBehaviour:
   minX: 0
   maxX: 50
   buildTilemap: {fileID: 2107338665}
+  walkableTilemap: {fileID: 2025944852}
   isAI: 0
   team: 0
   gridSize: 1
