@@ -296,8 +296,6 @@ public class UIManager : MonoBehaviour
             description += $"建築類型: 房屋\n";
             description += $"隊伍: {house.team}\n";
             description += $"血量: {house.getHealth}/{house.maxHealth}\n";
-            description += $"農民血量: {house.farmerHealth}\n";
-            description += $"農民攻擊力: {house.farmerDamage}\n";
             description += $"採集速度: {house.farmerCollectSpeed}s\n";
             description += $"目標資源: {(house.farmerTarget == FarmerTargetType.meat ? "肉類" : "木材")}";
             return description;
@@ -311,9 +309,7 @@ public class UIManager : MonoBehaviour
             description += $"隊伍: {archerTower.team}\n";
             description += $"血量: {archerTower.getHealth}/{archerTower.maxHealth}\n";
             description += $"塔範圍: {archerTower.towerRadius}\n";
-            description += $"士兵血量: {archerTower.soilderHealth}\n";
-            description += $"士兵攻擊力: {archerTower.soilderDamage}\n";
-            description += $"士兵攻擊範圍: {archerTower.soilderAttackRange}";
+            
             return description;
         }
         
@@ -323,9 +319,7 @@ public class UIManager : MonoBehaviour
             description += $"建築類型: 戰士塔\n";
             description += $"隊伍: {warriorTower.team}\n";
             description += $"血量: {warriorTower.getHealth}/{warriorTower.maxHealth}\n";
-            description += $"塔範圍: {warriorTower.towerRadius}\n";
-            description += $"士兵血量: {warriorTower.soilderHealth}\n";
-            description += $"士兵攻擊力: {warriorTower.soilderDamage}";
+            description += $"範圍: {warriorTower.towerRadius}\n";
             return description;
         }
         
