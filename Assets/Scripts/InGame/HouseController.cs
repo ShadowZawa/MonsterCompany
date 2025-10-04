@@ -21,7 +21,11 @@ public class HouseController : MonoBehaviour
     public FarmerTargetType farmerTarget = FarmerTargetType.meat;
     public int farmerMaxStorage = 10;
     public int getHealth => currentHealth;
-
+    public void setTag(string teamName)
+    {
+        team = (teamName == "Blue") ? Team.Blue : Team.Red;
+        gameObject.tag = teamName;
+    }
     void Start()
     {
         currentHealth = maxHealth;

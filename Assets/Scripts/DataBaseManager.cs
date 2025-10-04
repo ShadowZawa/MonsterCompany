@@ -26,6 +26,7 @@ public class DataBaseManager : MonoBehaviour
     void Start()
     {
         StartCoroutine(InitializeDatabase());
+        EventBus.Instance.Subscribe<GameOverEvent>(e => dealGameOver(e.winningTeam));
     }
 
     private IEnumerator InitializeDatabase()
@@ -94,5 +95,13 @@ public class DataBaseManager : MonoBehaviour
     public int getInfo()
     {
         return auth.coin;
+    }
+
+    private void dealGameOver(Team? winner)
+    {
+        var collection = database.GetCollection<PlayerData>("Users");
+        var filter = Builders<PlayerData>.Filter.Eq(u => u.username, auth.username);
+        var update = Builders<PlayerData>.Update.Inc(u => u.coin, 10);
+        collection.UpdateOne(filter, update);
     }
 }

@@ -14,7 +14,15 @@ public struct ResourceUpdateEvent
 }
 public struct CurrencyUpdateEvent
 {
-    
+
+}
+public struct GameOverEvent
+{
+    public Team? winningTeam;
+    public GameOverEvent(Team? winningTeam)
+    {
+        this.winningTeam = winningTeam;
+    }
 }
 public struct ScoreUpdateEvent
 {

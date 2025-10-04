@@ -310,7 +310,7 @@ public class TowerBuilder : MonoBehaviour
 
         // 創建實際的塔
         GameObject towerInstance = Instantiate(tower.towerPrefab, position, Quaternion.identity);
-        towerInstance.tag = (team == Team.Blue) ? "Blue" : "Red";
+        towerInstance.SendMessage("setTag", (team == Team.Blue) ? "Blue" : "Red", SendMessageOptions.DontRequireReceiver);
         return true;
     }
 

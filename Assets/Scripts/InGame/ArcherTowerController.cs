@@ -22,6 +22,11 @@ public class ArcherTowerController : MonoBehaviour
         StartCoroutine("InitSoilder");
 
     }
+    public void setTag(string teamName)
+    {
+        team = (teamName == "Blue") ? Team.Blue : Team.Red;
+        gameObject.tag = teamName;
+    }
     IEnumerator InitSoilder()
     {
         for (int i = 0; i < 3; i++)

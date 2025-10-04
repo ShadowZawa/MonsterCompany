@@ -18,8 +18,8 @@ public class CastleModel : MonoBehaviour
             Destroy(gameObject);
 
             // game Over
-            GameManager.instance.redTeam.score += (team == Team.Blue) ? 0 : 5000;
-            GameManager.instance.blueTeam.score += (team == Team.Blue) ? 5000 : 0;
+            GameManager.instance.redTeam.score += (team == Team.Blue) ? 5000 : 0;
+            GameManager.instance.blueTeam.score += (team == Team.Blue) ? 0 : 5000;
             GameManager.instance.GameOver();
         }
     }

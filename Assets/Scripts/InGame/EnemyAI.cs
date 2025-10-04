@@ -35,6 +35,7 @@ public class EnemyAI : MonoBehaviour
     
     void Update()
     {
+        if (GameManager.instance.isOver) return;
         gameObject.tag = (team == Team.Blue) ? "Blue" : "Red";
         switch (currentState)
         {

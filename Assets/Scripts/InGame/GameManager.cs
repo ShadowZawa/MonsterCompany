@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 
 public enum Team
@@ -41,6 +43,7 @@ public class GameManager : MonoBehaviour
     public GameObject redLoc;
     public TeamModel blueTeam = new TeamModel();
     public TeamModel redTeam = new TeamModel();
+    public GameObject resultPanel;
 
     private float countDownTime = 0f;
     private bool isCounting = false;
@@ -147,13 +150,16 @@ public class GameManager : MonoBehaviour
         // 根據分數決定勝利隊伍
         isOver = true;
         string result;
+        Team? winner = null;
         if (blueTeam.score > redTeam.score)
         {
             result = "藍隊獲勝！";
+            winner = Team.Blue;
         }
         else if (redTeam.score > blueTeam.score)
         {
             result = "紅隊獲勝！";
+            winner = Team.Red;
         }
         else
         {
@@ -161,14 +167,20 @@ public class GameManager : MonoBehaviour
         }
         MessageBox.instance.ShowMessage("遊戲結束！" + result, Color.cyan);
         // delay 3 seconds then show detail
-        StartCoroutine(DelayAndSwitchScene(3f));
+        EventBus.Instance.Publish<GameOverEvent>(new GameOverEvent(winner));
+        StartCoroutine(DelayAndSwitchScene(3f, winner));
     }
 
-    private IEnumerator DelayAndSwitchScene(float delay)
+    private IEnumerator DelayAndSwitchScene(float delay, Team? winner)
     {
         yield return new WaitForSeconds(delay);
         // Switch to the main menu scene
-        SceneManager.LoadScene("MenuScene");
+        resultPanel.SetActive(true);
+        resultPanel.GetComponentsInChildren<TextMeshProUGUI>()[2].text = winner == Team.Blue ? "獲勝！" : "失敗！";
+        resultPanel.GetComponentsInChildren<Button>()[0].onClick.AddListener(() =>
+        {
+            SceneManager.LoadScene("MenuScene");
+        });
     }
 
     void Awake()

@@ -53,6 +53,7 @@ public class SoilderAI : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.instance.isOver) return;
         if (!isInitialized) return;
 
         switch (currentState)

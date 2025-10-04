@@ -221,7 +221,7 @@ public class AIManager : MonoBehaviour
 
                 TowerModel tower = towerBuilder.getTowerByName(action.unitName);
                 if (tower == null) {
-                    Debug.LogError($"AI建塔失敗：找不到塔 {action.unitName}");
+                    //Debug.LogError($"AI建塔失敗：找不到塔 {action.unitName}");
                     return false;
                 }
                 towerBuilder.setCurrentTower(tower); // 確保currentTower同步
@@ -235,9 +235,9 @@ public class AIManager : MonoBehaviour
                 if (buildPos != Vector2.zero)
                 {
                     // Debug: 印出建塔資訊
-                    Debug.Log($"AI建塔嘗試：{tower.towerName} at {buildPos} team={towerBuilder.team}");
+                    //Debug.Log($"AI建塔嘗試：{tower.towerName} at {buildPos} team={towerBuilder.team}");
                     bool valid = towerBuilder.IsValidBuildPosition(buildPos);
-                    Debug.Log($"IsValidBuildPosition={valid}");
+                    //Debug.Log($"IsValidBuildPosition={valid}");
                     if (valid && towerBuilder.BuildTowerAt(action.unitName, new Vector3(buildPos.x, buildPos.y, 0)))
                     {
                         Debug.Log("建造成功" + buildPos);
@@ -249,13 +249,13 @@ public class AIManager : MonoBehaviour
 
             case AIAction.ActionType.SpawnMob:
                 if (mobManager == null) return false;
-                print("AI召喚怪物" + action.unitName);
+                //print("AI召喚怪物" + action.unitName);
                 if (mobManager.EnqueueMobByName(action.unitName))
                 {
                     mobManager.StartBoat();
                     return true;
                 }
-                print("AI召喚怪物失敗" + action.unitName);
+                //print("AI召喚怪物失敗" + action.unitName);
                 return false;
         }
         return false;
