@@ -52,11 +52,13 @@ public class MobManager : MonoBehaviour
     }
 
     private List<GameObject> _mobQueue = new List<GameObject>();
+    public int mobCount => _mobQueue.Count;
     public bool EnqueueMobByName(string mobName)
     {
         // 找到對應的怪物
         MobModel mob = System.Array.Find(mobs, m => m.mobName == mobName);
-        if (mob == null) {
+        if (mob == null)
+        {
             print("找不到怪物：" + mobName);
             return false;
         }

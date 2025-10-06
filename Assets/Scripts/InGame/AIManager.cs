@@ -8,7 +8,8 @@ public class AIAction
     public enum ActionType
     {
         BuildTower,
-        SpawnMob
+        SpawnMob,
+        StartBoat,
     }
 
     public ActionType type;
@@ -16,6 +17,7 @@ public class AIAction
     public int goldCost;     // 需要的金
     public int woodCost;     // 需要的木
     public int meatCost;     // 需要的肉
+    public int mobCount;     // 需要的怪物數量
     public Vector2 position;  // 建造位置（如果是固定位置）
 }
 
@@ -84,6 +86,15 @@ public class AIManager : MonoBehaviour
                     type = AIAction.ActionType.BuildTower,
                     unitName = "House",
                     goldCost = 150
+                },
+                new AIAction {
+                    type = AIAction.ActionType.BuildTower,
+                    unitName = "Warrior_Tower",
+                    goldCost = 150
+                },
+                new AIAction {
+                    type = AIAction.ActionType.StartBoat,
+                    mobCount = 4
                 }
             },
             resourceThreshold = 50
@@ -220,7 +231,8 @@ public class AIManager : MonoBehaviour
                 if (towerBuilder == null) return false;
 
                 TowerModel tower = towerBuilder.getTowerByName(action.unitName);
-                if (tower == null) {
+                if (tower == null)
+                {
                     //Debug.LogError($"AI建塔失敗：找不到塔 {action.unitName}");
                     return false;
                 }
@@ -252,11 +264,17 @@ public class AIManager : MonoBehaviour
                 //print("AI召喚怪物" + action.unitName);
                 if (mobManager.EnqueueMobByName(action.unitName))
                 {
-                    mobManager.StartBoat();
+                    //mobManager.StartBoat();
                     return true;
                 }
                 //print("AI召喚怪物失敗" + action.unitName);
                 return false;
+            case AIAction.ActionType.StartBoat:
+                if (mobManager == null) return false;
+                if (action.mobCount > mobManager.mobCount) return false;
+                //print("AI開始出航");
+                mobManager.StartBoat();
+                return true;
         }
         return false;
     }

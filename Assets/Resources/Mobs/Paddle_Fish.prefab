@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -2253911629886400664, guid: 500ee453ef86d044ab01f017f11483df, type: 3}
       propertyPath: m_Name
-      value: Paddle Fish
+      value: Paddle_Fish
       objectReference: {fileID: 0}
     - target: {fileID: -2253911629886400664, guid: 500ee453ef86d044ab01f017f11483df, type: 3}
       propertyPath: m_TagString
@@ -92,6 +92,6 @@ MonoBehaviour:
   team: 1
   maxHealth: 50
   moveSpeed: 1.5
-  attackRadius: 2
+  attackRadius: 1
   damage: 10
   isBoating: 1
