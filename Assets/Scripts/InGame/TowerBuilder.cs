@@ -110,6 +110,7 @@ public class TowerBuilder : MonoBehaviour
             Mathf.Round(centerPos.x / gridSize) * gridSize,
             Mathf.Round(centerPos.y / gridSize) * gridSize
         );
+        currentPos = gridPos;
         CreateGhost(gridPos);
     }
 

@@ -74,6 +74,10 @@ public class FarmerAI : MonoBehaviour
 
     void SearchForResource()
     {
+        if (storage == 0)
+        {
+            targetType = _controller.farmerTarget;
+        }
         string tag = (targetType == FarmerTargetType.meat) ? "Meat" : "Tree";
         GameObject[] resources = GameObject.FindGameObjectsWithTag(tag);
         GameObject nearest = null;
@@ -137,10 +141,18 @@ public class FarmerAI : MonoBehaviour
 
     void MoveToDepot()
     {
-        Vector3 depotPos = _controller.spawnPos.position;
+        Vector3 depotPos;
+        if (_controller == null)
+        {
+            depotPos = (team == Team.Blue) ? GameManager.instance.blueCastle.transform.position : GameManager.instance.redCastle.transform.position;
+        }
+        else
+        {
+
+            depotPos = _controller.spawnPos.position;
+        }
         Vector3 direction = (depotPos - transform.position);
-        direction.y = 0;
-        if (direction.magnitude < 0.3f)
+        if (Vector3.Distance(depotPos, transform.position) < 0.3f)
         {
             if (targetType == FarmerTargetType.meat)
             {
@@ -155,6 +167,10 @@ public class FarmerAI : MonoBehaviour
                 
             }
             storage = 0;
+            if (_controller == null)
+            {
+                Destroy(gameObject);
+            }
             currentState = FarmerState.Idle;
             return;
         }

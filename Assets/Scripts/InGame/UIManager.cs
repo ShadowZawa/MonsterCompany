@@ -54,17 +54,31 @@ public class UIManager : MonoBehaviour
                 screenPosition = Input.GetTouch(0).position;
             else
                 screenPosition = Input.mousePosition;
-                
+
             // 檢查是否點擊到UI
             if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
                 return;
-                
+
+            // 判斷是否點擊到 UI Button
+            var pointerEventData = new UnityEngine.EventSystems.PointerEventData(UnityEngine.EventSystems.EventSystem.current);
+            pointerEventData.position = screenPosition;
+            var results = new System.Collections.Generic.List<UnityEngine.EventSystems.RaycastResult>();
+            UnityEngine.EventSystems.EventSystem.current.RaycastAll(pointerEventData, results);
+            foreach (var r in results)
+            {
+                if (r.gameObject.GetComponent<UnityEngine.UI.Button>() != null)
+                {
+                    // 點擊到按鈕，直接 return
+                    return;
+                }
+            }
+
             Vector3 worldPosition = mainCamera.ScreenToWorldPoint(screenPosition);
             worldPosition.z = 0;
-            
+
             // 使用射線檢測點擊的物件
             RaycastHit2D hit = Physics2D.Raycast(worldPosition, Vector2.zero);
-            
+
             if (hit.collider != null)
             {
                 Debug.Log(hit.collider.gameObject.name);
@@ -281,7 +295,6 @@ public class UIManager : MonoBehaviour
         if (enemy != null)
         {
             description += $"單位類型: 怪物\n";
-            description += $"隊伍: {enemy.team}\n";
             description += $"血量: {enemy.getCurrentHealth}/{enemy.maxHealth}\n";
             description += $"攻擊力: {enemy.damage}\n";
             description += $"移動速度: {enemy.moveSpeed}\n";
@@ -294,9 +307,7 @@ public class UIManager : MonoBehaviour
         if (house != null)
         {
             description += $"建築類型: 房屋\n";
-            description += $"隊伍: {house.team}\n";
             description += $"血量: {house.getHealth}/{house.maxHealth}\n";
-            description += $"採集速度: {house.farmerCollectSpeed}s\n";
             description += $"目標資源: {(house.farmerTarget == FarmerTargetType.meat ? "肉類" : "木材")}";
             return description;
         }
@@ -306,7 +317,6 @@ public class UIManager : MonoBehaviour
         if (archerTower != null)
         {
             description += $"建築類型: 弓箭塔\n";
-            description += $"隊伍: {archerTower.team}\n";
             description += $"血量: {archerTower.getHealth}/{archerTower.maxHealth}\n";
             description += $"塔範圍: {archerTower.towerRadius}\n";
             
@@ -317,7 +327,6 @@ public class UIManager : MonoBehaviour
         if (warriorTower != null)
         {
             description += $"建築類型: 戰士塔\n";
-            description += $"隊伍: {warriorTower.team}\n";
             description += $"血量: {warriorTower.getHealth}/{warriorTower.maxHealth}\n";
             description += $"範圍: {warriorTower.towerRadius}\n";
             return description;
@@ -328,7 +337,6 @@ public class UIManager : MonoBehaviour
         if (farmer != null)
         {
             description += $"單位類型: 農民\n";
-            description += $"隊伍: {farmer.team}\n";
             description += $"血量: {farmer.getCurrentHealth}\n";
             description += $"目標資源: {(farmer.targetType == FarmerTargetType.meat ? "肉類" : "木材")}";
             return description;
@@ -337,7 +345,6 @@ public class UIManager : MonoBehaviour
         if (castle != null)
         {
             description += $"單位類型: 主堡\n";
-            description += $"隊伍: {castle.team}\n";
             description += $"血量: {castle.getHealth}/{castle.maxHealth}\n";
             return description;
         }
@@ -377,5 +384,6 @@ public class UIManager : MonoBehaviour
         // 顯示切換訊息
         string newTarget = (house.farmerTarget == FarmerTargetType.meat) ? "肉類" : "木材";
         MessageBox.instance.ShowMessage($"農民目標已切換為: {newTarget}", Color.green);
+        print($"農民目標已切換為: {newTarget}");
     }
 }

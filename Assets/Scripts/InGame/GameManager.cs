@@ -41,6 +41,8 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public GameObject blueLoc;
     public GameObject redLoc;
+    public GameObject blueCastle;
+    public GameObject redCastle;
     public TeamModel blueTeam = new TeamModel();
     public TeamModel redTeam = new TeamModel();
     public GameObject resultPanel;

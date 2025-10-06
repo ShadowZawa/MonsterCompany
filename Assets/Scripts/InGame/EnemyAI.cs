@@ -19,7 +19,7 @@ public class EnemyAI : MonoBehaviour
     public Team team=Team.Blue;
     public int maxHealth = 50;
     public float moveSpeed = 1.5f;
-    public float attackRadius = 2f;
+    public float attackRadius = 0.5f;
     public int damage = 10;
     private GameObject target;
     private float attackInterval = 1f;
