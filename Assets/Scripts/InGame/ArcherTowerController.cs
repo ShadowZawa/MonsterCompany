@@ -12,7 +12,6 @@ public class ArcherTowerController : MonoBehaviour
     public float towerRadius = 7;
     public int soilderHealth = 30;
     public int soilderDamage = 10;
-    public float soilderAttackRange = 5;
     public int getHealth => currentHealth;
     void Start()
     {

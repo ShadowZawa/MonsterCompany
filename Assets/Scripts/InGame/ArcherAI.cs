@@ -23,6 +23,7 @@ public class ArcherAI : MonoBehaviour
     private float patrolTimer = 0f;
     private float attackInterval = 1.2f;
     private float attackTimer = 0f;
+    private float attackRange = 5f;
     private GameObject currentTarget;
     private bool isInitialized = false;
     public GameObject arrowPrefab;
@@ -106,10 +107,22 @@ public class ArcherAI : MonoBehaviour
         foreach (var enemy in enemies)
         {
             float dist = Vector3.Distance(transform.position, enemy.transform.position);
-            if (dist < _towerController.towerRadius && dist < minDist)
+            if (_towerController != null)
             {
-                minDist = dist;
-                nearest = enemy;
+                if (dist < _towerController.towerRadius && dist < minDist)
+                {
+                    minDist = dist;
+                    nearest = enemy;
+                }
+            }
+            else
+                if (dist < patrolRadius && dist < minDist)
+                {
+                    minDist = dist;
+                    nearest = enemy;
+                }
+            {
+                
             }
         }
         if (nearest != null)
@@ -128,16 +141,35 @@ public class ArcherAI : MonoBehaviour
             return;
         }
         float dist = Vector3.Distance(transform.position, currentTarget.transform.position);
-        if (dist > _towerController.towerRadius + _towerController.soilderAttackRange)
+        if (_towerController != null)
         {
-            currentTarget = null;
-            currentState = ArcherState.Patrol;
-            return;
+            if (dist > _towerController.towerRadius)
+            {
+                currentTarget = null;
+                currentState = ArcherState.Patrol;
+                return;
+            }
+
+            if (dist <= attackRange) // 遠程攻擊距離
+            {
+                currentState = ArcherState.Attack;
+                return;
+            }
         }
-        if (dist <= _towerController.soilderAttackRange) // 遠程攻擊距離
+        else
         {
-            currentState = ArcherState.Attack;
-            return;
+            if (dist > patrolRadius)
+            {
+                currentTarget = null;
+                currentState = ArcherState.Patrol;
+                return;
+            }
+
+            if (dist <= 2f) // 遠程攻擊距離
+            {
+                currentState = ArcherState.Attack;
+                return;
+            }
         }
         _animator.Play("Run ", 0);
         Vector3 direction = (currentTarget.transform.position - transform.position).normalized;

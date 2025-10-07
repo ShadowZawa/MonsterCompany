@@ -85,8 +85,7 @@ public class SoilderAI : MonoBehaviour
     void Patrol()
     {
         Vector3 direction = (targetPosition - transform.position);
-        direction.y = 0;
-        if (direction.magnitude < 0.2f)
+        if (Vector3.Distance(transform.position, targetPosition) < 0.2f)
         { 
             // 由 patrolInterval 控制換點
             _animator.Play("Idle");
@@ -100,6 +99,7 @@ public class SoilderAI : MonoBehaviour
 
     void SetNewPatrolTarget()
     {
+        if (_towerController == null) return;
         Vector2 randomCircle = UnityEngine.Random.insideUnitCircle * patrolRadius;
         targetPosition = _towerController.transform.position + new Vector3(randomCircle.x, 0, randomCircle.y);
     }
@@ -113,10 +113,21 @@ public class SoilderAI : MonoBehaviour
         foreach (var enemy in enemies)
         {
             float dist = Vector3.Distance(transform.position, enemy.transform.position);
-            if (dist < _towerController.towerRadius && dist < minDist)
+            if (_towerController != null)
             {
-                minDist = dist;
-                nearest = enemy;
+                if (dist < _towerController.towerRadius && dist < minDist)
+                {
+                    minDist = dist;
+                    nearest = enemy;
+                }
+            }
+            else
+            {
+                if (dist < minDist && dist < patrolRadius)
+                {
+                    minDist = dist;
+                    nearest = enemy;
+                }
             }
         }
         if (nearest != null)
@@ -134,17 +145,20 @@ public class SoilderAI : MonoBehaviour
             return;
         }
         float dist = Vector3.Distance(transform.position, currentTarget.transform.position);
-        if (dist > _towerController.towerRadius)
+        if (_towerController != null)
         {
-            currentTarget = null;
-            currentState = SoliderState.Patrol;
-            return;
+            if (dist > _towerController.towerRadius)
+            {
+                currentTarget = null;
+                currentState = SoliderState.Patrol;
+                return;
+            }
         }
         if (dist <= 0.5f) // 進入攻擊距離
-        {
-            currentState = SoliderState.Attack;
-            return;
-        }
+            {
+                currentState = SoliderState.Attack;
+                return;
+            }
         _animator.Play("Run");
         Vector3 direction = (currentTarget.transform.position - transform.position).normalized;
         transform.position += direction * moveSpeed * Time.deltaTime;

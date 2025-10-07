@@ -155,6 +155,22 @@ public class AIManager : MonoBehaviour
     {
         while (true)
         {
+            // 1. 取得AI隊伍資源
+            int aiWood = GameManager.instance.getResource(team, ResourceType.Wood);
+            int aiMeat = GameManager.instance.getResource(team, ResourceType.Meat);
+
+            // 2. 判斷優先採集目標
+            FarmerTargetType targetType = (aiWood < aiMeat) ? FarmerTargetType.tree : FarmerTargetType.meat;
+
+            // 3. 批次切換所有AI HouseController的farmerTarget
+            var houses = GameObject.FindObjectsOfType<HouseController>();
+            foreach (var house in houses)
+            {
+                if (house.team == team)
+                {
+                    house.farmerTarget = targetType;
+                }
+            }
             // Debug: 顯示目前階段與資源
             string phase = initialActionsComplete ? "隨機階段" : "初始階段";
             string actionInfo = "";
