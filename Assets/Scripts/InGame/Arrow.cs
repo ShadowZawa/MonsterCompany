@@ -11,9 +11,15 @@ public class Arrow : MonoBehaviour
         this.target = target;
         this.damage = damage;
     }
-
+    public int count = 0;
     void Update()
     {
+        count++;
+        if (count > 300) // 超過300幀後自動銷毀
+        {
+            Destroy(gameObject);
+            return;
+        }
         if (target == null)
         {
             Destroy(gameObject);

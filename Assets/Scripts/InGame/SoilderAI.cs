@@ -112,6 +112,16 @@ public class SoilderAI : MonoBehaviour
         float minDist = float.MaxValue;
         foreach (var enemy in enemies)
         {
+            if (enemy == this.gameObject) continue;
+
+            // 嘗試從目標物件取得其 team，若取得失敗則保守跳過
+            Team? candidateTeam = GetTeamFromObject(enemy);
+            if (candidateTeam.HasValue && candidateTeam.Value == this.team)
+            {
+                // 同隊，跳過
+                continue;
+            }
+
             float dist = Vector3.Distance(transform.position, enemy.transform.position);
             if (_towerController != null)
             {
@@ -136,6 +146,35 @@ public class SoilderAI : MonoBehaviour
             currentState = SoliderState.Chasing;
             attackTimer = 0f;
         }
+    }
+
+    // 輔助函式：嘗試從常見組件讀取 team 值
+    private Team? GetTeamFromObject(GameObject obj)
+    {
+        // 檢查 EnemyAI
+        var enemyAI = obj.GetComponent<EnemyAI>();
+        if (enemyAI != null) return enemyAI.team;
+
+        // 檢查 SoilderAI
+        var soilderAI = obj.GetComponent<SoilderAI>();
+        if (soilderAI != null) return soilderAI.team;
+
+        // 檢查 FarmerAI
+        var farmerAI = obj.GetComponent<FarmerAI>();
+        if (farmerAI != null) return farmerAI.team;
+
+        // 檢查 HouseController
+        var house = obj.GetComponent<HouseController>();
+        if (house != null) return house.team;
+
+        // 檢查 WarriorTowerController / ArcherTowerController
+        var warrior = obj.GetComponent<WarriorTowerController>();
+        if (warrior != null) return warrior.team;
+        var archer = obj.GetComponent<ArcherTowerController>();
+        if (archer != null) return archer.team;
+
+        // 無法確定
+        return null;
     }
     void ChaseEnemy()
     {
