@@ -84,6 +84,8 @@ ScriptedImporter:
     generateAnimationClips: 1
     addSortingGroup: 1
     addShadowCasters: 0
+    generateIndividualEvents: 1
+    generateSpriteAtlas: 1
   asepriteImporterSettings:
     fileImportMode: 1
     importHiddenLayers: 0
@@ -97,6 +99,8 @@ ScriptedImporter:
     generateAnimationClips: 1
     addSortingGroup: 1
     addShadowCasters: 0
+    generateIndividualEvents: 1
+    generateSpriteAtlas: 1
   importFileNodeState: 1
   platformSettingsDirtyTick: 0
   textureAssetName: 
@@ -106,6 +110,7 @@ ScriptedImporter:
     pivot: {x: 0, y: 0}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 0
@@ -127,6 +132,7 @@ ScriptedImporter:
     pivot: {x: 0.45945945, y: -1.2307693}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 483
@@ -147,6 +153,7 @@ ScriptedImporter:
     pivot: {x: 0.45945945, y: -1.2307693}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 639
@@ -167,6 +174,7 @@ ScriptedImporter:
     pivot: {x: 0.45205483, y: -1.2307693}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 458
@@ -187,6 +195,7 @@ ScriptedImporter:
     pivot: {x: 0.44827586, y: -1.2444445}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 619
@@ -207,6 +216,7 @@ ScriptedImporter:
     pivot: {x: 0.44827586, y: -1.258427}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 154
@@ -227,6 +237,7 @@ ScriptedImporter:
     pivot: {x: 0.44444445, y: -1.258427}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 614
@@ -247,6 +258,7 @@ ScriptedImporter:
     pivot: {x: 0.45205483, y: -1.2444445}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 310
@@ -267,6 +279,7 @@ ScriptedImporter:
     pivot: {x: 0.45578232, y: -1.2307693}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 795
@@ -287,6 +300,7 @@ ScriptedImporter:
     pivot: {x: 0.45517245, y: -1.2307693}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 772
@@ -307,6 +321,7 @@ ScriptedImporter:
     pivot: {x: 0.45578232, y: -1.2307693}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 148
@@ -327,6 +342,7 @@ ScriptedImporter:
     pivot: {x: 0.45578232, y: -1.2307693}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 303
@@ -347,6 +363,7 @@ ScriptedImporter:
     pivot: {x: 0.45454544, y: -1.2444445}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 463
@@ -367,6 +384,7 @@ ScriptedImporter:
     pivot: {x: 0.45205483, y: -1.2921349}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 772
@@ -387,6 +405,7 @@ ScriptedImporter:
     pivot: {x: 0.44217688, y: -1.2921349}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 464
@@ -407,6 +426,7 @@ ScriptedImporter:
     pivot: {x: 0.43918917, y: -1.3218391}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 307
@@ -427,6 +447,7 @@ ScriptedImporter:
     pivot: {x: 0.44137928, y: -1.2417582}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 4
@@ -447,6 +468,7 @@ ScriptedImporter:
     pivot: {x: 0.45205483, y: -1.1702127}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 175
@@ -467,6 +489,7 @@ ScriptedImporter:
     pivot: {x: 0.4589041, y: -1.1702127}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 329
@@ -487,6 +510,7 @@ ScriptedImporter:
     pivot: {x: 0.46206895, y: -1.2307693}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 157
@@ -507,6 +531,7 @@ ScriptedImporter:
     pivot: {x: 0.49295777, y: -1.2173913}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 4
@@ -527,6 +552,7 @@ ScriptedImporter:
     pivot: {x: 0.5037037, y: -1.2043011}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 4
@@ -547,6 +573,7 @@ ScriptedImporter:
     pivot: {x: 0.50000006, y: -1.2043011}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 147
@@ -567,6 +594,7 @@ ScriptedImporter:
     pivot: {x: 0.50000006, y: -1.2043011}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 287
@@ -587,6 +615,7 @@ ScriptedImporter:
     pivot: {x: 0.3640553, y: -1.2307693}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 4
@@ -607,6 +636,7 @@ ScriptedImporter:
     pivot: {x: 0.3659794, y: -1.2307693}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 229
@@ -627,6 +657,7 @@ ScriptedImporter:
     pivot: {x: 0.3457447, y: -1.2307693}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 431
@@ -647,6 +678,7 @@ ScriptedImporter:
     pivot: {x: 0.34078214, y: -1.2307693}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 627
@@ -667,6 +699,7 @@ ScriptedImporter:
     pivot: {x: 0.43670884, y: -1.2307693}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 814
@@ -687,6 +720,7 @@ ScriptedImporter:
     pivot: {x: 0.49079755, y: -1.050505}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 4
@@ -707,6 +741,7 @@ ScriptedImporter:
     pivot: {x: 0.50735295, y: -1.12}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 4
@@ -727,6 +762,7 @@ ScriptedImporter:
     pivot: {x: 0.51063836, y: -1.4819278}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 926
@@ -747,6 +783,7 @@ ScriptedImporter:
     pivot: {x: 0.53571427, y: -1.443038}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 659
@@ -767,6 +804,7 @@ ScriptedImporter:
     pivot: {x: 0.53271025, y: -1.3529412}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 427
@@ -787,6 +825,7 @@ ScriptedImporter:
     pivot: {x: 0.5315315, y: -1.4024391}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 894
@@ -807,6 +846,7 @@ ScriptedImporter:
     pivot: {x: 0.5412844, y: -1.4024391}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 542
@@ -827,6 +867,7 @@ ScriptedImporter:
     pivot: {x: 0.48333335, y: -1.3734939}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 766
@@ -847,6 +888,7 @@ ScriptedImporter:
     pivot: {x: 0.506579, y: -1.2873563}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
+    customData: 
     rect:
       serializedVersion: 2
       x: 612
@@ -863,6 +905,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 612, y: 210}
   spriteSheetImportData: []
+  tileSetImportData: []
   asepriteLayers:
   - layerIndex: 0
     uuid:
@@ -1210,7 +1253,10 @@ ScriptedImporter:
         height: 87
       spriteId: 94f3e76f739c6014589310fdb1ad4cdd
     linkedCells: []
+    tileCells: []
+    tileSetIndex: 0
     parentIndex: -1
+  tileSets: []
   platformSettings:
   - name: Default
     overridden: 0
