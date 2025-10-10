@@ -208,6 +208,23 @@ public class GameManager : MonoBehaviour
         startGame();
         print("Start Game:" + MasterData.instance.currentStage.stageName);
         
+        // 10秒後開啟黑市
+        StartCoroutine(OpenBlackMarketAfterDelay(10f));
+    }
+
+    private IEnumerator OpenBlackMarketAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+        BlackMarketManager blackMarket = GetComponent<BlackMarketManager>();
+        if (blackMarket != null)
+        {
+            blackMarket.Open();
+        }
+        else
+        {
+            Debug.LogWarning("[GameManager] BlackMarketManager 未找到");
+        }
     }
 
 }

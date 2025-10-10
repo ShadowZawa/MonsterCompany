@@ -47,7 +47,7 @@ public class CardLoader : MonoBehaviour
 
 
 
-
+    public BlackCardData blackCardData;
     public mobSheetData mobData;
     public GameObject cardPrefab;
     public GameObject cardPrefab2;
@@ -75,6 +75,7 @@ public class CardLoader : MonoBehaviour
         cardPrefab = Resources.Load<GameObject>("CardPrefab");
         cardPrefab2 = Resources.Load<GameObject>("CardPrefab2");
         detailUIPrefab = Resources.Load<GameObject>("DetailPrefab");
+        blackCardData = BlackCardData.LoadFromResources("BlackCards");
         TextAsset jsonData = Resources.Load<TextAsset>("mobLevelSheet");
         if (jsonData != null)
         {
