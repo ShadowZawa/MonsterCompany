@@ -32,6 +32,7 @@ public class SoilderAI : MonoBehaviour
     private float attackTimer = 0f;
     private GameObject currentTarget;
     private bool isInitialized = false;
+    public AudioClip attackAudioClip;
 
     void Start()
     {
@@ -47,6 +48,7 @@ public class SoilderAI : MonoBehaviour
         patrolTimer = 0f;
         isInitialized = true;
         team = controller.team;
+        attackAudioClip = controller.attackAudioClip;
         gameObject.tag = (team == Team.Blue) ? "Blue" : "Red";
 
     }
@@ -221,6 +223,8 @@ public class SoilderAI : MonoBehaviour
         attackTimer += Time.deltaTime;
         if (attackTimer >= attackInterval)
         {
+            GetComponent<AudioSource>().clip = attackAudioClip;
+            GetComponent<AudioSource>().Play();
             // 假設敵人有 TakeDamage(int) 方法
             currentTarget.SendMessage("takeDamage", _towerController.soilderDamage, SendMessageOptions.DontRequireReceiver);
             attackTimer = 0f;

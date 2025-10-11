@@ -7,11 +7,12 @@ public class WarriorTowerController : MonoBehaviour
     public Team team;
     public GameObject SoilderPrefab;
     public Transform spawnPos;
-    private int currentHealth;
+    private int currentHealth; 
     public int maxHealth = 100;
     public float towerRadius = 5;
     public int soilderHealth = 30;
     public int soilderDamage = 10;
+    public AudioClip attackAudioClip;
     public int getHealth => currentHealth;
     void Start()
     {
@@ -32,6 +33,8 @@ public class WarriorTowerController : MonoBehaviour
         {
             GameObject soilder = Instantiate(SoilderPrefab, spawnPos.position, Quaternion.identity);
             soilder.GetComponent<SoilderAI>().init(this);
+            soilder.AddComponent<AudioSource>();
+            soilder.GetComponent<AudioSource>().playOnAwake = false;
             yield return new WaitForSeconds(0.5f);
         }
     }

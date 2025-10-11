@@ -29,6 +29,7 @@ public class mobLevelData
     public Sprite previewImage;
     public Sprite previewBlueImage;
     public Sprite previewRedImage;
+    
     public mobLevel[] levels;
 }
 [Serializable]

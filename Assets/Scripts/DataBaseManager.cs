@@ -34,11 +34,21 @@ public class DataBaseManager : MonoBehaviour
         // 等待一幀確保其他組件都已初始化
         yield return null;
 
-        MongoClient client = new MongoClient("mongodb://db_user:Abc123456@125.228.7.197:27017/");
-        var nas = client.ListDatabaseNames();
-        database = client.GetDatabase("PlayerData");
+        //MongoClient client = new MongoClient("mongodb://db_user:Abc123456@125.228.7.197:27017/");
+        //var nas = client.ListDatabaseNames();
+        //database = client.GetDatabase("PlayerData");
         //Register("DefaultUser");
-        Login("DefaultUser");
+        //Login("DefaultUser");
+        //EventBus.Instance.Publish(new CurrencyUpdateEvent());
+        MessageBox.instance.ShowMessage("登入成功！", Color.green);
+        auth = new PlayerData
+        {
+            userId = ObjectId.GenerateNewId().ToString(),
+            username = "Guest",
+            coin = 1000,     // 初始金幣
+            diamond = 100,    // 初始鑽石
+            cards = new List<CardData>() // 初始空卡片列表
+        };
     }
 
     public bool Register(string username)

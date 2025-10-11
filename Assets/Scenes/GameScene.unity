@@ -2121,7 +2121,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundManager
   musicSource: {fileID: 0}
-  defaultMusic: {fileID: 8300000, guid: ef28552e66c6ce44b830c75a5dfa8dd2, type: 3}
+  defaultMusic: {fileID: 8300000, guid: 02d124dab715adc42a33b3c20a3f997d, type: 3}
   playOnAwake: 1
   persistAcrossScenes: 1
   sfxSourcePrefab: {fileID: 0}
