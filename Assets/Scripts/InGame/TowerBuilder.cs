@@ -245,8 +245,9 @@ public class TowerBuilder : MonoBehaviour
 
     void Update()
     {
-        if (!_isBuilding || isAI) return; 
+        if (!_isBuilding || isAI) return;
 
+        // 處理觸控輸入（手機模式）
         if (Input.touchCount == 1)
         {
             Touch touch = Input.GetTouch(0);
@@ -277,6 +278,32 @@ public class TowerBuilder : MonoBehaviour
                 CreateGhost(alignedPos);
                 currentPos = alignedPos;
             }
+        }
+        // 處理滑鼠輸入（電腦模式）
+        else if (Input.GetMouseButton(0))
+        {
+            // 檢查是否點擊到UI元素
+            if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+
+            // 取得滑鼠位置
+            Vector3 mousePos = Input.mousePosition;
+            Vector3 worldPos = mainCamera.ScreenToWorldPoint(mousePos);
+            Vector2 gridPos = new Vector2(
+                Mathf.Round(worldPos.x / gridSize) * gridSize,
+                Mathf.Round(worldPos.y / gridSize) * gridSize
+            );
+
+            // 強制座標為整數（去除小數點）
+            Vector3 alignedPos = new Vector3(
+                Mathf.RoundToInt(gridPos.x),
+                Mathf.RoundToInt(gridPos.y),
+                0
+            );
+            CreateGhost(alignedPos);
+            currentPos = alignedPos;
         }
     }
 

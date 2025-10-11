@@ -144,7 +144,7 @@ public class AIManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("沒有可用的建造位置");
+            //Debug.Log("沒有可用的建造位置");
         }
         return Vector2.zero;
 
@@ -268,7 +268,7 @@ public class AIManager : MonoBehaviour
                     //Debug.Log($"IsValidBuildPosition={valid}");
                     if (valid && towerBuilder.BuildTowerAt(action.unitName, new Vector3(buildPos.x, buildPos.y, 0)))
                     {
-                        Debug.Log("建造成功" + buildPos);
+                        //Debug.Log("建造成功" + buildPos);
                         return true;
                     }
                     //Debug.LogWarning($"建造失敗，條件不符！座標:{buildPos} 塔:{action.unitName} team:{towerBuilder.team}");

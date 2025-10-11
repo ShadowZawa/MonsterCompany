@@ -30,10 +30,12 @@ public class CameraManager : MonoBehaviour
         if (!TowerBuilder.IsBuilding)
         {
             HandleSingleTouchInput();
+            HandleMouseInput();
         }
         else
         {
             HandleDoubleTouchInput();
+            HandleMouseInput();
         }
     }
 
@@ -113,6 +115,61 @@ public class CameraManager : MonoBehaviour
         if (touch1.phase == TouchPhase.Ended || touch2.phase == TouchPhase.Ended)
         {
             isDragging = false;
+        }
+    }
+
+    // 滑鼠拖曳支援（電腦模式）
+    private Vector3 lastMousePosition;
+    private bool isMouseDragging = false;
+
+    void HandleMouseInput()
+    {
+        // 如果有觸控輸入，優先使用觸控
+        if (Input.touchCount > 0)
+        {
+            isMouseDragging = false;
+            return;
+        }
+
+        // 根據建築模式決定使用哪個滑鼠按鍵
+        // 非建築模式：左鍵（0）拖曳
+        // 建築模式：右鍵（1）拖曳
+        int mouseButton = TowerBuilder.IsBuilding ? 1 : 0;
+
+        // 滑鼠按下開始拖曳
+        if (Input.GetMouseButtonDown(mouseButton))
+        {
+            // 檢查是否點擊到UI（只在按下時檢查）
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            {
+                isMouseDragging = false;
+                return;
+            }
+
+            isMouseDragging = true;
+            lastMousePosition = Input.mousePosition;
+        }
+        // 滑鼠放開停止拖曳
+        else if (Input.GetMouseButtonUp(mouseButton))
+        {
+            isMouseDragging = false;
+        }
+        // 滑鼠拖曳中
+        else if (Input.GetMouseButton(mouseButton) && isMouseDragging)
+        {
+            Vector3 currentMousePosition = Input.mousePosition;
+            Vector3 deltaPosition = currentMousePosition - lastMousePosition;
+
+            // 計算世界空間移動距離
+            float worldToScreenRatio = mainCamera.orthographicSize * 2f / Screen.height;
+            Vector3 moveDirection = new Vector3(
+                -deltaPosition.x * worldToScreenRatio,
+                -deltaPosition.y * worldToScreenRatio,
+                0
+            ) * dragSpeed;
+
+            MoveCamera(moveDirection);
+            lastMousePosition = currentMousePosition;
         }
     }
 

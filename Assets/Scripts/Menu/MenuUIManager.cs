@@ -137,7 +137,7 @@ public class MenuUIManager : MonoBehaviour
 
     public void updateCurrency(CurrencyUpdateEvent e)
     {
-        print("currency was updated");
+        //print("currency was updated");
         if (DataBaseManager.instance != null && DataBaseManager.instance.auth != null)
         {
             if (coinText != null) coinText.text = DataBaseManager.instance.auth.coin.ToString();

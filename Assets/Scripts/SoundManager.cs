@@ -16,6 +16,10 @@ public class SoundManager : MonoBehaviour
     public AudioSource sfxSourcePrefab; // 用來在指定位置播放短音效的 prefab（需包含 AudioSource）
     private float globalSFXVolume = 1f; // 全局音效音量
 
+    // 音量設定的 PlayerPrefs 鍵值（與 SettingUIManager 保持一致）
+    private const string MUSIC_VOLUME_KEY = "MusicVolume";
+    private const string SFX_VOLUME_KEY = "SFXVolume";
+
     private void Awake()
     {
         if (instance == null)
@@ -43,9 +47,17 @@ public class SoundManager : MonoBehaviour
 
     void Start()
     {
+        // 先載入音量設定
+        float savedMusicVolume = PlayerPrefs.GetFloat(MUSIC_VOLUME_KEY, 1f);
+        float savedSFXVolume = PlayerPrefs.GetFloat(SFX_VOLUME_KEY, 1f);
+        
+        SetMusicVolume(savedMusicVolume);
+        SetSFXVolume(savedSFXVolume);
+
+        // 使用已載入的音量播放音樂
         if (playOnAwake && defaultMusic != null)
         {
-            PlayMusic(defaultMusic);
+            PlayMusic(defaultMusic, savedMusicVolume);
         }
     }
 
