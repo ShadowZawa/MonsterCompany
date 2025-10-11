@@ -14,10 +14,21 @@ public class SoundManager : MonoBehaviour
 
     [Header("One-shot Settings")]
     public AudioSource sfxSourcePrefab; // 用來在指定位置播放短音效的 prefab（需包含 AudioSource）
+    private float globalSFXVolume = 1f; // 全局音效音量
 
     private void Awake()
     {
-        
+        if (instance == null)
+        {
+            instance = this;
+            if (persistAcrossScenes)
+                DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         // 如果沒有指定 musicSource，建立一個
         if (musicSource == null)
@@ -58,6 +69,16 @@ public class SoundManager : MonoBehaviour
     {
         musicSource.volume = Mathf.Clamp01(v);
     }
+
+    public void SetSFXVolume(float v)
+    {
+        globalSFXVolume = Mathf.Clamp01(v);
+    }
+
+    public float GetSFXVolume()
+    {
+        return globalSFXVolume;
+    }
     #endregion
 
     #region Positional SFX
@@ -81,7 +102,7 @@ public class SoundManager : MonoBehaviour
 
         src.clip = clip;
         src.spatialBlend = 1f; // 3D 聲音
-        src.volume = Mathf.Clamp01(volume);
+        src.volume = Mathf.Clamp01(volume * globalSFXVolume); // 應用全局音效音量
         src.Play();
         Destroy(src.gameObject, clip.length + 0.1f);
         return src;
@@ -106,7 +127,7 @@ public class SoundManager : MonoBehaviour
         }
         src.clip = clip;
         src.spatialBlend = 1f;
-        src.volume = Mathf.Clamp01(volume);
+        src.volume = Mathf.Clamp01(volume * globalSFXVolume); // 應用全局音效音量
         src.Play();
         Destroy(src.gameObject, clip.length + 0.1f);
         return src;
