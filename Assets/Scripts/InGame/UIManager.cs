@@ -160,13 +160,25 @@ public class UIManager : MonoBehaviour
                 Destroy(child.gameObject);
         }
 
+        // 添加 Horizontal Layout Group 來自動排列按鈕
+        HorizontalLayoutGroup layoutGroup = Towerpanel.GetComponent<HorizontalLayoutGroup>();
+        if (layoutGroup == null)
+        {
+            layoutGroup = Towerpanel.AddComponent<HorizontalLayoutGroup>();
+        }
+        layoutGroup.spacing = 10f;
+        layoutGroup.childAlignment = TextAnchor.MiddleCenter;
+        layoutGroup.childControlWidth = false;
+        layoutGroup.childControlHeight = false;
+        layoutGroup.childForceExpandWidth = false;
+        layoutGroup.childForceExpandHeight = false;
+
         var towerDataList = CardLoader.instance.mobData.towers;
         // 為每個塔創建按鈕
         for (int i = 0; i < towerDataList.Length; i++)
         {
             var towerData = towerDataList[i];
             GameObject cardObj = Instantiate(CardLoader.instance.cardPrefab, Towerpanel.transform);
-            cardObj.transform.position = new Vector2(200,150) + Vector2.right * i*300;
 
             // 設置卡片信息
             CardUIModel cardUI = cardObj.GetComponent<CardUIModel>();
@@ -197,6 +209,19 @@ public class UIManager : MonoBehaviour
                 Destroy(child.gameObject);
         }
 
+        // 添加 Horizontal Layout Group 來自動排列按鈕
+        HorizontalLayoutGroup layoutGroup = Mobpanel.GetComponent<HorizontalLayoutGroup>();
+        if (layoutGroup == null)
+        {
+            layoutGroup = Mobpanel.AddComponent<HorizontalLayoutGroup>();
+        }
+        layoutGroup.spacing = 10f;
+        layoutGroup.childAlignment = TextAnchor.MiddleCenter;
+        layoutGroup.childControlWidth = false;
+        layoutGroup.childControlHeight = false;
+        layoutGroup.childForceExpandWidth = false;
+        layoutGroup.childForceExpandHeight = false;
+
         var mobDataList = CardLoader.instance.mobData.mobs;
         // 為每個怪物創建按鈕
         for (int i = 0; i < mobDataList.Length; i++)
@@ -204,8 +229,6 @@ public class UIManager : MonoBehaviour
             var mobData = mobDataList[i];
             GameObject cardObj = Instantiate(CardLoader.instance.cardPrefab, Mobpanel.transform);
 
-            // 設置卡片圖片
-            cardObj.transform.position = new Vector2(200, 150) + Vector2.right * i * 300;
             // 設置卡片信息
             CardUIModel cardUI = cardObj.GetComponent<CardUIModel>();
             if (cardUI != null)
@@ -231,7 +254,7 @@ public class UIManager : MonoBehaviour
         // 添加必要的UI組件
         Button startBoatButton = startBoatBtn.AddComponent<Button>();
         Image buttonImage = startBoatBtn.AddComponent<Image>();
-        //buttonImage.sprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0, 0, 100, 50), new Vector2(0.5f, 0.5f));
+        
         // 創建並設置按鈕文字
         GameObject textObj = new GameObject("ButtonText");
         textObj.transform.SetParent(startBoatBtn.transform, false);
@@ -241,10 +264,8 @@ public class UIManager : MonoBehaviour
         buttonText.fontSize = 20; 
         buttonText.color = Color.black;
 
-
-        // 設置按鈕位置和大小
+        // 設置按鈕大小(會由 Layout Group 自動定位)
         RectTransform buttonRect = startBoatBtn.GetComponent<RectTransform>();
-        buttonRect.transform.position = new Vector2(200, 150) + Vector2.right * mobDataList.Length * 300;
         buttonRect.sizeDelta = new Vector2(100, 50);
         
         // 設置文字位置

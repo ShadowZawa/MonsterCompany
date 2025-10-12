@@ -68,6 +68,74 @@
                     "fireRate": 1
                 }
             ]
+        },
+        {
+            "name": "Gnome",
+            "displayName": "地精",
+            "description": "小小的，但很頑皮",
+            "woodCost": 8,
+            "meatCost": 3,
+            "mobSpriteName": "Gnome_Sprite",
+            "rarity": "UnCommon",
+            "levels": [
+                {
+                    "level": 1,
+                    "health": 70,
+                    "damage": 7,
+                    "speed": 4,
+                    "range": 1,
+                    "fireRate": 1
+                },
+                {
+                    "level": 2,
+                    "health": 75,
+                    "damage": 10,
+                    "speed": 4,
+                    "range": 1,
+                    "fireRate": 1
+                },
+                {
+                    "level": 3,
+                    "health": 80,
+                    "damage": 12,
+                    "speed": 4,
+                    "range": 1,
+                    "fireRate": 1
+                },
+                {
+                    "level": 4,
+                    "health": 85,
+                    "damage": 15,
+                    "speed": 4,
+                    "range": 1,
+                    "fireRate": 1
+                },
+                {
+                    "level": 5,
+                    "health": 90,
+                    "damage": 17,
+                    "speed": 4,
+                    "range": 1,
+                    "fireRate": 1
+                },
+                {
+                    "level": 6,
+                    "health": 95,
+                    "damage": 20,
+                    "speed": 4,
+                    "range": 1,
+                    "fireRate": 1
+                },
+                {
+                    "level": 7,
+                    "health": 100,
+                    "damage": 25,
+                    "speed": 4,
+                    "range": 1,
+                    "fireRate": 1
+                }
+            ]
+
         }
     ],
     "towers": [

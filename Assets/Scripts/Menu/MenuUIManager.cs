@@ -51,35 +51,45 @@ public class MenuUIManager : MonoBehaviour
     {
         if (!CardLoader.instance.hasInit) CardLoader.instance.Init();
 
-        // 清除現有卡片
+        // 清除現有卡片(但保留 Exit 按鈕)
         foreach (Transform child in BagpackPanel.transform)
         {
+            // 跳過名為 Exit 的物件
+            if (child.gameObject.name == "Exit")
+            {
+                // 添加 Layout Element 並忽略它,避免被 Grid Layout 控制
+                LayoutElement layoutElement = child.GetComponent<LayoutElement>();
+                if (layoutElement == null)
+                {
+                    layoutElement = child.gameObject.AddComponent<LayoutElement>();
+                }
+                layoutElement.ignoreLayout = true;
+                continue;
+            }
             Destroy(child.gameObject);
         }
 
-        // 設定卡片佈局參數
-        float cardWidth = 100f;
-        float cardHeight = 128f;
-        float margin = 20f;
-        int cardsPerRow = 3;
+        // 添加 Grid Layout Group 來自動排列卡片
+        GridLayoutGroup gridLayout = BagpackPanel.GetComponent<GridLayoutGroup>();
+        if (gridLayout == null)
+        {
+            gridLayout = BagpackPanel.AddComponent<GridLayoutGroup>();
+        }
+        
+        // 設定 Grid 參數
+        gridLayout.cellSize = new Vector2(100f, 128f);  // 卡片大小
+        gridLayout.spacing = new Vector2(20f, 20f);     // 間距
+        gridLayout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        gridLayout.constraintCount = 3;  // 每行3張卡片
+        gridLayout.childAlignment = TextAnchor.UpperLeft;
+        gridLayout.padding = new RectOffset(80, 20, 20, 20);  // 左上右下邊距
         
         for (int i = 0; i < CardLoader.instance.mobData.towers.Length; i++)
         {
             mobLevelData tower = CardLoader.instance.mobData.towers[i];
             
-            // 計算位置（每行3張卡片）
-            int row = i / cardsPerRow;
-            int col = i % cardsPerRow;
-            float posX = 80 + col * (cardWidth + margin); // 從x=80開始排列
-            float posY = 300 - row * (cardHeight + margin); // 從y=300開始向下排列
-            
-            // 生成卡片
+            // 生成卡片 (位置由 Grid Layout 自動管理)
             GameObject cardObj = Instantiate(CardLoader.instance.cardPrefab2, BagpackPanel.transform);
-            RectTransform rectTransform = cardObj.GetComponent<RectTransform>();
-            
-            // 設定位置和大小
-            rectTransform.anchoredPosition = new Vector2(posX, posY);
-            //rectTransform.sizeDelta = new Vector2(cardWidth, cardHeight);
 
             // 設定卡片資訊
             CardUIModel cardUI = cardObj.GetComponent<CardUIModel>();
