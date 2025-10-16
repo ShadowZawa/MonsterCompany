@@ -13,19 +13,16 @@ public class ArcherAI : MonoBehaviour
 {
     public Team team;
     private Animator _animator;
+    private EntityModel _model;
     private ArcherTowerController _towerController;
     private ArcherState currentState;
     private Vector3 targetPosition;
-    private float moveSpeed = 2f;
-    private int health;
-    private float patrolRadius = 3f;
-    private float patrolInterval = 2f;
-    private float patrolTimer = 0f;
-    private float attackInterval = 1.2f;
-    private float attackTimer = 0f;
-    private float attackRange = 5f;
+
     private GameObject currentTarget;
     private bool isInitialized = false;
+    private float patrolTimer = 0f;
+    private float attackTimer = 0f;
+
     public GameObject arrowPrefab;
 
     void Start()
@@ -37,9 +34,8 @@ public class ArcherAI : MonoBehaviour
     public void init(ArcherTowerController controller)
     {
         _towerController = controller;
-        health = _towerController.soilderHealth;
+        _model = GetComponent<EntityModel>();
         SetNewPatrolTarget();
-        patrolTimer = 0f;
         isInitialized = true;
         team = controller.team;
         gameObject.tag = (team == Team.Blue) ? "Blue" : "Red";
@@ -58,7 +54,7 @@ public class ArcherAI : MonoBehaviour
                 _animator.Play("Run ", 0);
                 Patrol();
                 patrolTimer += Time.deltaTime;
-                if (patrolTimer >= patrolInterval)
+                if (patrolTimer >= _model.patrolInterval)
                 {
                     SetNewPatrolTarget();
                     patrolTimer = 0f;
@@ -88,13 +84,13 @@ public class ArcherAI : MonoBehaviour
         {
             _animator.Play("Run ", 0);
 
-            transform.position += direction.normalized * moveSpeed * Time.deltaTime;
+            transform.position += direction.normalized * _model.moveSpeed * Time.deltaTime;
         }
     }
 
     void SetNewPatrolTarget()
     {
-        Vector2 randomCircle = UnityEngine.Random.insideUnitCircle * patrolRadius;
+        Vector2 randomCircle = UnityEngine.Random.insideUnitCircle * _model.patrolRadius;
         targetPosition = _towerController.transform.position + new Vector3(randomCircle.x, 0, randomCircle.y);
     }
 
@@ -116,7 +112,7 @@ public class ArcherAI : MonoBehaviour
                 }
             }
             else
-                if (dist < patrolRadius && dist < minDist)
+                if (dist < _model.patrolRadius && dist < minDist)
                 {
                     minDist = dist;
                     nearest = enemy;
@@ -150,7 +146,7 @@ public class ArcherAI : MonoBehaviour
                 return;
             }
 
-            if (dist <= attackRange) // 遠程攻擊距離
+            if (dist <= _model.attackRange) // 遠程攻擊距離
             {
                 currentState = ArcherState.Attack;
                 return;
@@ -158,7 +154,7 @@ public class ArcherAI : MonoBehaviour
         }
         else
         {
-            if (dist > patrolRadius)
+            if (dist > _model.patrolRadius)
             {
                 currentTarget = null;
                 currentState = ArcherState.Patrol;
@@ -173,7 +169,7 @@ public class ArcherAI : MonoBehaviour
         }
         _animator.Play("Run ", 0);
         Vector3 direction = (currentTarget.transform.position - transform.position).normalized;
-        transform.position += direction * moveSpeed * Time.deltaTime;
+        transform.position += direction * _model.moveSpeed * Time.deltaTime;
     }
 
     void AttackEnemy()
@@ -191,7 +187,7 @@ public class ArcherAI : MonoBehaviour
             return;
         }
         attackTimer += Time.deltaTime;
-        if (attackTimer >= attackInterval)
+        if (attackTimer >= _model.attackInterval)
         {
             ShootArrow(currentTarget);
             attackTimer = 0f;
@@ -229,17 +225,10 @@ public class ArcherAI : MonoBehaviour
         // 命中
         if (target != null)
         {
-            target.SendMessage("takeDamage", _towerController.soilderDamage, SendMessageOptions.DontRequireReceiver);
+            target.SendMessage("takeDamage", _model.damage, SendMessageOptions.DontRequireReceiver);
         }
         Destroy(arrow);
     }
 
-    public void takeDamage(int dmg)
-    {
-        health -= dmg;
-        if (health < 0)
-        {
-            Destroy(gameObject);
-        }
-    }
+    
 }

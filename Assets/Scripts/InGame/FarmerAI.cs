@@ -20,10 +20,8 @@ public class FarmerAI : MonoBehaviour
     public Team team;
     private Animator _animator;
     private HouseController _controller;
+    private EntityModel _model;
     private FarmerState currentState;
-    private float moveSpeed = 2f;
-    private int health;
-    public int getCurrentHealth => health;
     private int storage = 0;
     private int maxStorage = 10;
     private GameObject currentTarget;
@@ -33,7 +31,7 @@ public class FarmerAI : MonoBehaviour
     public void init(HouseController controller)
     {
         _controller = controller;
-        health = _controller.farmerHealth;
+        _model = GetComponent<EntityModel>();
         isInitialized = true;
         team = controller.team;
         gameObject.tag = (team == Team.Blue) ? "Blue" : "Red";
@@ -114,7 +112,7 @@ public class FarmerAI : MonoBehaviour
             return;
         }
         _animator?.Play("Run");
-        transform.position += direction.normalized * moveSpeed * Time.deltaTime;
+        transform.position += direction.normalized * _model.moveSpeed * Time.deltaTime;
     }
 
     private float farmTimer = 0f;
@@ -126,10 +124,10 @@ public class FarmerAI : MonoBehaviour
             return;
         }
         farmTimer += Time.deltaTime;
-        if (farmTimer >= _controller.farmerCollectSpeed)
+        if (farmTimer >= _model.attackInterval)
         {
-            currentTarget.SendMessage("collect", _controller.farmerDamage, SendMessageOptions.DontRequireReceiver);
-            storage += _controller.farmerDamage;
+            currentTarget.SendMessage("collect", _model.damage, SendMessageOptions.DontRequireReceiver);
+            storage += _model.damage;
             farmTimer = 0f;
         }
         if (storage >= maxStorage)
@@ -175,15 +173,8 @@ public class FarmerAI : MonoBehaviour
             return;
         }
         _animator?.Play("Run");
-        transform.position += direction.normalized * moveSpeed * Time.deltaTime;
+        transform.position += direction.normalized * _model.moveSpeed * Time.deltaTime;
     }
 
-    public void takeDamage(int dmg)
-    {
-        health -= dmg;
-        if (health < 0)
-        {
-            Destroy(gameObject);
-        }
-    }
+
 }

@@ -21,14 +21,12 @@ public class SoilderAI : MonoBehaviour
     public Team team;
     private Animator _animator;
     private WarriorTowerController _towerController;
+    private EntityModel _model;
     private SoliderState currentState;
     private Vector3 targetPosition;
-    private float moveSpeed = 2f;
-    private int health;
-    private float patrolRadius = 3f;
-    private float patrolInterval = 2f;
+
+
     private float patrolTimer = 0f;
-    private float attackInterval = 1f;
     private float attackTimer = 0f;
     private GameObject currentTarget;
     private bool isInitialized = false;
@@ -43,7 +41,7 @@ public class SoilderAI : MonoBehaviour
     public void init(WarriorTowerController controller)
     {
         _towerController = controller;
-        health = _towerController.soilderHealth;
+        _model = GetComponent<EntityModel>();
         SetNewPatrolTarget();
         patrolTimer = 0f;
         isInitialized = true;
@@ -67,7 +65,7 @@ public class SoilderAI : MonoBehaviour
             case SoliderState.Patrol:
                 Patrol();
                 patrolTimer += Time.deltaTime;
-                if (patrolTimer >= patrolInterval)
+                if (patrolTimer >= _model.patrolInterval)
                 {
                     SetNewPatrolTarget();
                     patrolTimer = 0f;
@@ -95,14 +93,14 @@ public class SoilderAI : MonoBehaviour
         else
         { 
             _animator.Play("Run"); 
-            transform.position += direction.normalized * moveSpeed * Time.deltaTime;
+            transform.position += direction.normalized * _model.moveSpeed * Time.deltaTime;
         }
     }
 
     void SetNewPatrolTarget()
     {
         if (_towerController == null) return;
-        Vector2 randomCircle = UnityEngine.Random.insideUnitCircle * patrolRadius;
+        Vector2 randomCircle = UnityEngine.Random.insideUnitCircle * _model.patrolRadius;
         targetPosition = _towerController.transform.position + new Vector3(randomCircle.x, 0, randomCircle.y);
     }
 
@@ -127,7 +125,7 @@ public class SoilderAI : MonoBehaviour
             float dist = Vector3.Distance(transform.position, enemy.transform.position);
             if (_towerController != null)
             {
-                if (dist < _towerController.towerRadius && dist < minDist)
+                if (dist < _towerController.getModel.attackRange && dist < minDist)
                 {
                     minDist = dist;
                     nearest = enemy;
@@ -135,7 +133,7 @@ public class SoilderAI : MonoBehaviour
             }
             else
             {
-                if (dist < minDist && dist < patrolRadius)
+                if (dist < minDist && dist < _model.patrolRadius)
                 {
                     minDist = dist;
                     nearest = enemy;
@@ -188,7 +186,7 @@ public class SoilderAI : MonoBehaviour
         float dist = Vector3.Distance(transform.position, currentTarget.transform.position);
         if (_towerController != null)
         {
-            if (dist > _towerController.towerRadius)
+            if (dist > _towerController.getModel.attackRange)
             {
                 currentTarget = null;
                 currentState = SoliderState.Patrol;
@@ -202,7 +200,7 @@ public class SoilderAI : MonoBehaviour
             }
         _animator.Play("Run");
         Vector3 direction = (currentTarget.transform.position - transform.position).normalized;
-        transform.position += direction * moveSpeed * Time.deltaTime;
+        transform.position += direction * _model.moveSpeed * Time.deltaTime;
     }
     
 
@@ -214,31 +212,22 @@ public class SoilderAI : MonoBehaviour
             return;
         }
         float dist = Vector3.Distance(transform.position, currentTarget.transform.position);
-        if (dist > _towerController.towerRadius)
+        if (dist > _towerController.getModel.attackRange)
         {
             currentTarget = null;
             currentState = SoliderState.Patrol;
             return;
         }
         attackTimer += Time.deltaTime;
-        if (attackTimer >= attackInterval)
+        if (attackTimer >= _model.attackInterval)
         {
             GetComponent<AudioSource>().clip = attackAudioClip;
             GetComponent<AudioSource>().Play();
             // 假設敵人有 TakeDamage(int) 方法
-            currentTarget.SendMessage("takeDamage", _towerController.soilderDamage, SendMessageOptions.DontRequireReceiver);
+            currentTarget.SendMessage("takeDamage", _model.damage, SendMessageOptions.DontRequireReceiver);
             attackTimer = 0f;
         }
-        // 可加上面向敵人
     }
 
-    public void takeDamage(int dmg)
-    {
-        health -= dmg;
-        if (health < 0)
-        {
-            
-        Destroy(gameObject);
-        }
-    }
+
 }

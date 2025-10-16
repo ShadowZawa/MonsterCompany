@@ -13,14 +13,10 @@ public enum EnemyState
 public class EnemyAI : MonoBehaviour
 {
     private EnemyState currentState = EnemyState.Idle;
-    private int currentHealth;
-    public int getCurrentHealth => currentHealth;
     private Animator _animator;
+    private EntityModel _model;
+
     public Team team=Team.Blue;
-    public int maxHealth = 50;
-    public float moveSpeed = 1.5f;
-    public float attackRadius = 0.5f;
-    public int damage = 10;
     private GameObject target;
     private float attackInterval = 1f;
     private float attackTimer = 0f;
@@ -28,9 +24,9 @@ public class EnemyAI : MonoBehaviour
 
     void Start()
     {
-        currentHealth = maxHealth;
         FindTarget();
         _animator = GetComponent<Animator>();
+        _model = GetComponent<EntityModel>();
     }
     
     void Update()
@@ -59,7 +55,7 @@ public class EnemyAI : MonoBehaviour
                     break;
                 }
                 float dist = Vector3.Distance(transform.position, target.transform.position);
-                if (dist > attackRadius)
+                if (dist > _model.attackRange)
                 {
                     _animator.Play("Run");
                     MoveToTarget();
@@ -76,7 +72,7 @@ public class EnemyAI : MonoBehaviour
                     break;
                 }
                 float distA = Vector3.Distance(transform.position, target.transform.position);
-                if (distA > attackRadius)
+                if (distA > _model.attackRange)
                 {
                     currentState = EnemyState.Move;
                     break;
@@ -123,7 +119,7 @@ public class EnemyAI : MonoBehaviour
         if (target != null && target != this.gameObject)
         {
             Vector3 direction = (target.transform.position - transform.position).normalized;
-            transform.position += direction * moveSpeed * Time.deltaTime;
+            transform.position += direction * _model.moveSpeed * Time.deltaTime;
         }
     }
 
@@ -132,18 +128,9 @@ public class EnemyAI : MonoBehaviour
         // 假設塔有 takeDamage(int) 方法
         if (target != null && target != this.gameObject)
         {
-            target.SendMessage("takeDamage", damage, SendMessageOptions.DontRequireReceiver);
+            target.SendMessage("takeDamage", _model.damage, SendMessageOptions.DontRequireReceiver);
         }
     }
 
-    public void takeDamage(int dmg)
-    {
-        //print("enemy take dmg:"+dmg);
-        currentHealth -= dmg;
-        if (currentHealth <= 0)
-        {
-
-            Destroy(gameObject);
-        }
-    }
+   
 }

@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 3136396975862759863}
   - component: {fileID: 5745387110984478598}
   - component: {fileID: -2132524900060758188}
+  - component: {fileID: 3359220107645949252}
   m_Layer: 0
   m_Name: Warrior_Tower
   m_TagString: Blue
@@ -190,3 +191,23 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &3359220107645949252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7198656758092148132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f4f55a7542751d419e16c8d16b9ff88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EntityModel
+  entityType: 1
+  maxHealth: 100
+  damage: 10
+  attackRange: 1
+  moveSpeed: 2
+  patrolRadius: 3
+  patrolInterval: 2
+  attackInterval: 1.2

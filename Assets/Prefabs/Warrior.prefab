@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2147969239949719790}
   - component: {fileID: 3738100948969546480}
   - component: {fileID: 1782996464363130471}
+  - component: {fileID: -8192839852258031708}
   m_Layer: 0
   m_Name: Warrior
   m_TagString: Untagged
@@ -51,6 +52,11 @@ SpriteRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -72,6 +78,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
@@ -88,7 +95,7 @@ SpriteRenderer:
   m_SpriteSortPoint: 0
 --- !u!95 &3738100948969546480
 Animator:
-  serializedVersion: 5
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 3635925178906775023, guid: eb6f1e4ac220563409d354b73d8e91ca, type: 3}
   m_PrefabInstance: {fileID: 6684105184823366912}
@@ -102,6 +109,7 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -120,6 +128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: 0
+  attackAudioClip: {fileID: 0}
 --- !u!1001 &6684105184823366912
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -179,5 +188,28 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4816441613309024079, guid: eb6f1e4ac220563409d354b73d8e91ca, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8192839852258031708}
   m_SourcePrefab: {fileID: 100100000, guid: eb6f1e4ac220563409d354b73d8e91ca, type: 3}
+--- !u!114 &-8192839852258031708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3265700896747483904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f4f55a7542751d419e16c8d16b9ff88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EntityModel
+  entityType: 2
+  maxHealth: 100
+  damage: 10
+  attackRange: 1
+  moveSpeed: 2
+  patrolRadius: 3
+  patrolInterval: 2
+  attackInterval: 1.2

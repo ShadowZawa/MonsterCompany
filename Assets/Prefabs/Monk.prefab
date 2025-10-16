@@ -67,6 +67,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -2253911629886400664, guid: 50ebe8599d5d015499e17c05b6217346, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6233540481827026722}
+    - targetCorrespondingSourceObject: {fileID: -2253911629886400664, guid: 50ebe8599d5d015499e17c05b6217346, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5120531340654221606}
   m_SourcePrefab: {fileID: -8435245712485981826, guid: 50ebe8599d5d015499e17c05b6217346, type: 3}
 --- !u!1 &3893265629598950146 stripped
 GameObject:
@@ -87,3 +90,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   team: 0
   targetType: 0
+--- !u!114 &5120531340654221606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3893265629598950146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f4f55a7542751d419e16c8d16b9ff88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EntityModel
+  entityType: 2
+  maxHealth: 100
+  damage: 10
+  attackRange: 1
+  moveSpeed: 2
+  patrolRadius: 3
+  patrolInterval: 2
+  attackInterval: 1.2
