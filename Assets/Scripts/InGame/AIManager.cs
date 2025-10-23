@@ -13,6 +13,7 @@ public class AIAction
     }
 
     public ActionType type;
+    public float weight;          // 動作權重（用於隨機選擇）效果待實現
     public string unitName;  // 塔或怪物的名稱
     public int goldCost;     // 需要的金
     public int woodCost;     // 需要的木

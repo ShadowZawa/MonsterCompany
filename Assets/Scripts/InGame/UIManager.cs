@@ -316,10 +316,10 @@ public class UIManager : MonoBehaviour
         if (enemy != null)
         {
             description += $"單位類型: 怪物\n";
-            description += $"血量: {enemy.getCurrentHealth}/{enemy.maxHealth}\n";
-            description += $"攻擊力: {enemy.damage}\n";
-            description += $"移動速度: {enemy.moveSpeed}\n";
-            description += $"攻擊範圍: {enemy.attackRadius}";
+            description += $"血量: {enemy.getModel.getHealth}/{enemy.getModel.maxHealth}\n";
+            description += $"攻擊力: {enemy.getModel.damage}\n";
+            description += $"移動速度: {enemy.getModel.moveSpeed}\n";
+            description += $"攻擊範圍: {enemy.getModel.attackRange}";
             return description;
         }
         
@@ -328,7 +328,7 @@ public class UIManager : MonoBehaviour
         if (house != null)
         {
             description += $"建築類型: 房屋\n";
-            description += $"血量: {house.getHealth}/{house.maxHealth}\n";
+            description += $"血量: {house.getModel.getHealth}/{house.getModel.maxHealth}\n";
             description += $"目標資源: {(house.farmerTarget == FarmerTargetType.meat ? "肉類" : "木材")}";
             return description;
         }
@@ -338,9 +338,9 @@ public class UIManager : MonoBehaviour
         if (archerTower != null)
         {
             description += $"建築類型: 弓箭塔\n";
-            description += $"血量: {archerTower.getHealth}/{archerTower.maxHealth}\n";
-            description += $"塔範圍: {archerTower.towerRadius}\n";
-            
+            description += $"血量: {archerTower.getModel.getHealth}/{archerTower.getModel.maxHealth}\n";
+            description += $"塔範圍: {archerTower.getModel.attackRange}\n";
+
             return description;
         }
         
@@ -348,8 +348,8 @@ public class UIManager : MonoBehaviour
         if (warriorTower != null)
         {
             description += $"建築類型: 戰士塔\n";
-            description += $"血量: {warriorTower.getHealth}/{warriorTower.maxHealth}\n";
-            description += $"範圍: {warriorTower.towerRadius}\n";
+            description += $"血量: {warriorTower.getModel.getHealth}/{warriorTower.getModel.maxHealth}\n";
+            description += $"範圍: {warriorTower.getModel.attackRange}\n";
             return description;
         }
         
@@ -358,7 +358,7 @@ public class UIManager : MonoBehaviour
         if (farmer != null)
         {
             description += $"單位類型: 農民\n";
-            description += $"血量: {farmer.getCurrentHealth}\n";
+            description += $"血量: {farmer.getModel.getHealth}/{farmer.getModel.maxHealth}\n";
             description += $"目標資源: {(farmer.targetType == FarmerTargetType.meat ? "肉類" : "木材")}";
             return description;
         }

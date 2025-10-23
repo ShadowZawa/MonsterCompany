@@ -105,7 +105,7 @@ public class ArcherAI : MonoBehaviour
             float dist = Vector3.Distance(transform.position, enemy.transform.position);
             if (_towerController != null)
             {
-                if (dist < _towerController.towerRadius && dist < minDist)
+                if (dist < _towerController.getModel.attackRange && dist < minDist)
                 {
                     minDist = dist;
                     nearest = enemy;
@@ -139,18 +139,23 @@ public class ArcherAI : MonoBehaviour
         float dist = Vector3.Distance(transform.position, currentTarget.transform.position);
         if (_towerController != null)
         {
-            if (dist > _towerController.towerRadius)
+            // 在_towerController.getModel.attackRange外: 巡邏
+            if (dist > _towerController.getModel.attackRange)
             {
                 currentTarget = null;
                 currentState = ArcherState.Patrol;
                 return;
             }
 
-            if (dist <= _model.attackRange) // 遠程攻擊距離
+            // 在_model.attackRange內: 攻擊
+            if (dist <= _model.attackRange)
             {
                 currentState = ArcherState.Attack;
                 return;
             }
+
+            // 在_towerController.getModel.attackRange範圍內且不在_model.attackRange中: 追擊
+            // 繼續移動向目標
         }
         else
         {
@@ -180,7 +185,7 @@ public class ArcherAI : MonoBehaviour
             return;
         }
         float dist = Vector3.Distance(transform.position, currentTarget.transform.position);
-        if (dist > _towerController.towerRadius)
+        if (dist > _towerController.getModel.attackRange)
         {
             currentTarget = null;
             currentState = ArcherState.Patrol;

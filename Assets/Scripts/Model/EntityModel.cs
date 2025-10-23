@@ -18,7 +18,7 @@ public class EntityModel : MonoBehaviour
     public float attackRange = 1f;
     public float moveSpeed = 2f;
     public float patrolRadius = 3f;
-    public float patrolInterval = 2f;
+        public float patrolInterval = 2f;
     public float attackInterval = 1.2f;
 
     void Start()
@@ -28,7 +28,13 @@ public class EntityModel : MonoBehaviour
 
     public void takeDamage(int damage)
     {
-        currentHealth -= damage;
+        if (damage < 0)
+        {
+            Debug.LogWarning("Damage cannot be negative");
+            return;
+        }
+    
+        currentHealth = Mathf.Max(0, currentHealth - damage);
         if (currentHealth <= 0)
         {
             death();

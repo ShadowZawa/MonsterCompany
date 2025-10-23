@@ -348,9 +348,9 @@ public class TowerBuilder : MonoBehaviour
         if (ghostInstance == null) return;
 
         // 在這裡檢查資源是否足夠
-        if (GameManager.instance.getResource(team, ResourceType.Wood) <= currentTower.woodCost
-        || GameManager.instance.getResource(team, ResourceType.Meat) <= currentTower.meatCost
-        || GameManager.instance.getResource(team, ResourceType.Gold) <= currentTower.goldCost)
+        if (GameManager.instance.getResource(team, ResourceType.Wood) < currentTower.woodCost
+        || GameManager.instance.getResource(team, ResourceType.Meat) < currentTower.meatCost
+        || GameManager.instance.getResource(team, ResourceType.Gold) < currentTower.goldCost)
         {
             MessageBox.instance.ShowMessage("資源不足，無法建造！", Color.red);
             CancelBuild();

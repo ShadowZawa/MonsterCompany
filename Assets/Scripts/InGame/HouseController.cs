@@ -13,6 +13,7 @@ public class HouseController : MonoBehaviour
     public GameObject residentPrefab;
     public Transform spawnPos;
     private EntityModel _model;
+    public EntityModel getModel => _model;
     public FarmerTargetType farmerTarget = FarmerTargetType.meat;
     public int farmerMaxStorage = 10;
     public void setTag(string teamName)

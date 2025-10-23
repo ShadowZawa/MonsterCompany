@@ -7,11 +7,14 @@ public class ArcherTowerController : MonoBehaviour
     public Team team;
     public GameObject SoilderPrefab;
     public Transform spawnPos;
+    private EntityModel _model;
+    public EntityModel getModel => _model;
 
     void Start()
     {
         //InvokeRepeating("heal", 1f, 1f);
         //Summon 3 soilder from (spawnPos) and walk around
+        _model = GetComponent<EntityModel>();
         StartCoroutine("InitSoilder");
 
     }

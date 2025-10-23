@@ -15,6 +15,7 @@ public class EnemyAI : MonoBehaviour
     private EnemyState currentState = EnemyState.Idle;
     private Animator _animator;
     private EntityModel _model;
+    public EntityModel getModel => _model;
 
     public Team team=Team.Blue;
     private GameObject target;

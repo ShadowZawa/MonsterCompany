@@ -27,6 +27,7 @@ public class FarmerAI : MonoBehaviour
     private GameObject currentTarget;
     private bool isInitialized = false; 
     public FarmerTargetType targetType;
+    public EntityModel getModel => _model;
 
     public void init(HouseController controller)
     {
@@ -89,8 +90,7 @@ public class FarmerAI : MonoBehaviour
                 nearest = res;
             }
         }
-        if (Vector3.Distance(transform.position, nearest.transform.position) > 20f) return;
-        if (nearest != null)
+        if (nearest != null && Vector3.Distance(transform.position, nearest.transform.position) <= 20f)
         {
             currentTarget = nearest;
             currentState = FarmerState.MovingToTarget;
