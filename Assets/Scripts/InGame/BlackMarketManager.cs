@@ -3,18 +3,47 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
-
 public enum BlackCardType
 {
     SelfBuff,
     EnemyDebuff,
     Special
 }
+
+/// <summary>
+/// 黑市管理器 - 負責UI顯示和用戶交互 (MVC中的View+Controller)
+/// 職責：UI管理、卡牌選擇、資源檢查
+/// </summary>
 public class BlackMarketManager : MonoBehaviour
 {
-    public GameObject blackMarketPanel; // 黑市面板
-    private bool isOpen = false; // 黑市是否開啟
-    public List<BlackChoiceUIModel> choices = new List<BlackChoiceUIModel>(); // 黑市選項列表
+    [Header("UI組件")]
+    public GameObject blackMarketPanel;
+    public List<BlackChoiceUIModel> choices = new List<BlackChoiceUIModel>();
+    
+    [Header("遊戲設定")]
+    public Team playerTeam = Team.Blue;
+    
+    // 依賴的效果控制器
+    private BlackCardEffectController effectController;
+    
+    // 當前顯示的卡牌
+    private List<BlackCardModel> currentCards = new List<BlackCardModel>();
+    
+    // 黑市狀態
+    private bool isOpen = false;
+    
+    void Awake()
+    {
+        // 獲取效果控制器依賴
+        effectController = GetComponent<BlackCardEffectController>();
+        if (effectController == null)
+        {
+            effectController = gameObject.AddComponent<BlackCardEffectController>();
+        }
+        
+        // 設置玩家隊伍
+        effectController.playerTeam = playerTeam;
+    }
     public void Open()
     {
         isOpen = true;
@@ -47,6 +76,7 @@ public class BlackMarketManager : MonoBehaviour
 
         // 隨機抽取3張不同的卡片
         var selectedCards = allCards.OrderBy(x => UnityEngine.Random.value).Take(3).ToList();
+        currentCards = selectedCards; // 保存當前卡牌列表供後續使用
         
         Debug.Log($"[BlackMarket] 已抽取 {selectedCards.Count} 張卡片");
 
@@ -112,6 +142,9 @@ public class BlackMarketManager : MonoBehaviour
             if (choice.meatCost != null)
                 choice.meatCost.text = card.meatCost.ToString();
 
+            // 設置卡牌索引
+            choice.SetCardIndex(i);
+
             // 啟用選項物件
             choice.gameObject.SetActive(true);
             Debug.Log($"[BlackMarket] Choice[{i}] 已設為 Active");
@@ -126,6 +159,7 @@ public class BlackMarketManager : MonoBehaviour
         
         Debug.Log("[BlackMarket] Open() 執行完成");
     }
+    
     public void Toggle()
     {
         if (!isOpen)
@@ -136,6 +170,100 @@ public class BlackMarketManager : MonoBehaviour
         blackMarketPanel.SetActive(!blackMarketPanel.activeSelf);
     }
 
+    /// <summary>
+    /// 玩家選擇黑市卡牌 - 主要交互邏輯
+    /// </summary>
+    public void SelectCard(int choiceIndex)
+    {
+        if (!ValidateSelection(choiceIndex)) return;
+        
+        var selectedCard = currentCards[choiceIndex];
+        
+        if (!ProcessCardPurchase(selectedCard)) return;
+        
+        ExecuteCardEffect(selectedCard);
+        
+        CloseBlackMarket();
+    }
+    
+    /// <summary>
+    /// 驗證選擇是否有效
+    /// </summary>
+    private bool ValidateSelection(int choiceIndex)
+    {
+        if (choiceIndex < 0 || choiceIndex >= currentCards.Count)
+        {
+            Debug.LogError($"[BlackMarket] 無效的選擇索引: {choiceIndex}");
+            return false;
+        }
+        return true;
+    }
+    
+    /// <summary>
+    /// 處理卡牌購買邏輯
+    /// </summary>
+    private bool ProcessCardPurchase(BlackCardModel card)
+    {
+        if (!CanAffordCard(card))
+        {
+            MessageBox.instance.ShowMessage("資源不足！", Color.red);
+            return false;
+        }
+        
+        DeductCardCost(card);
+        return true;
+    }
+    
+    /// <summary>
+    /// 執行卡牌效果 - 委託給效果控制器
+    /// </summary>
+    private void ExecuteCardEffect(BlackCardModel card)
+    {
+        bool success = effectController.ExecuteEffect(card);
+        
+        if (success)
+        {
+            MessageBox.instance.ShowMessage($"使用了 {card.name}！", Color.green);
+        }
+        else
+        {
+            MessageBox.instance.ShowMessage($"卡牌效果執行失敗", Color.red);
+        }
+    }
 
+    /// <summary>
+    /// 檢查是否有足夠資源購買卡牌
+    /// </summary>
+    private bool CanAffordCard(BlackCardModel card)
+    {
+        return GameManager.instance.getResource(playerTeam, ResourceType.Gold) >= card.goldCost &&
+               GameManager.instance.getResource(playerTeam, ResourceType.Wood) >= card.woodCost &&
+               GameManager.instance.getResource(playerTeam, ResourceType.Meat) >= card.meatCost;
+    }
+
+    /// <summary>
+    /// 扣除卡牌成本
+    /// </summary>
+    private void DeductCardCost(BlackCardModel card)
+    {
+        GameManager.instance.costResource(playerTeam, ResourceType.Gold, card.goldCost);
+        GameManager.instance.costResource(playerTeam, ResourceType.Wood, card.woodCost);
+        GameManager.instance.costResource(playerTeam, ResourceType.Meat, card.meatCost);
+    }
+
+
+
+    /// <summary>
+    /// 關閉黑市面板
+    /// </summary>
+    private void CloseBlackMarket()
+    {
+        if (blackMarketPanel != null)
+        {
+            blackMarketPanel.SetActive(false);
+        }
+        isOpen = false;
+        currentCards.Clear();
+    }
 
 }
