@@ -3231,6 +3231,8 @@ MonoBehaviour:
   goldCost: {fileID: 7713935}
   woodCost: {fileID: 1144170566}
   meatCost: {fileID: 1204080704}
+  selectButton: {fileID: 0}
+  cardIndex: 0
 --- !u!224 &731335432 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1579106381431348295, guid: d9eb1f4716e8ab348829c590e4691da6, type: 3}
@@ -3273,6 +3275,8 @@ MonoBehaviour:
   goldCost: {fileID: 1950555739}
   woodCost: {fileID: 692947185}
   meatCost: {fileID: 1100870638}
+  selectButton: {fileID: 0}
+  cardIndex: 0
 --- !u!224 &761791281
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4282,6 +4286,7 @@ MonoBehaviour:
   - {fileID: 1463397550}
   - {fileID: 709661661}
   - {fileID: 761791280}
+  playerTeam: 0
 --- !u!1 &910987488
 GameObject:
   m_ObjectHideFlags: 0
@@ -7071,6 +7076,8 @@ MonoBehaviour:
   goldCost: {fileID: 498395750}
   woodCost: {fileID: 196851001}
   meatCost: {fileID: 175562380}
+  selectButton: {fileID: 0}
+  cardIndex: 0
 --- !u!1 &1466494739
 GameObject:
   m_ObjectHideFlags: 0

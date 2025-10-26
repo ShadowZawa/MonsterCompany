@@ -120,7 +120,7 @@ public class BlackCardEffectController : MonoBehaviour
         {
             var target = enemyTargets[UnityEngine.Random.Range(0, enemyTargets.Count)];
             target.getModel.takeDamage(9999, null); // 直接擊殺
-            MessageBox.instance.ShowMessage("暗殺成功！擊殺一名精英敵人！", Color.red);
+            MessageBox.instance.ShowMessage("暗殺成功！隨機擊殺一名敵人！", Color.red);
         }
         else
         {
@@ -150,7 +150,7 @@ public class BlackCardEffectController : MonoBehaviour
             if (unit != null)
             {
                 int damage = Mathf.RoundToInt(unit.maxHealth * 0.1f);
-                unit.takeDamage(damage, null);
+                unit.takeDamage(damage, 999);
             }
         }
         
@@ -178,12 +178,12 @@ public class BlackCardEffectController : MonoBehaviour
     private void BuffHPReduceAS(BlackCardModel card)
     {
         float duration = card.duration * 60f; // 3回合 = 180秒
-        ApplyBuffToAllUnits(playerTeam, "health", 1.2f, duration);
-        ApplyBuffToAllUnits(playerTeam, "attackSpeed", 0.9f, duration);
+        ApplyBuffToAllUnits(playerTeam, "health", 0.2f, duration);
+        ApplyBuffToAllUnits(playerTeam, "attackSpeed", -0.1f, duration);
         
         MessageBox.instance.ShowMessage("血肉儀式：生命力提升20%，攻速降低10%", Color.darkRed);
     }
-    
+    /*
     /// <summary>
     /// ID 9: 禁忌科技 - 立即隨機升級一座防禦塔，但有30%機率爆炸毀壞
     /// </summary>
@@ -230,7 +230,7 @@ public class BlackCardEffectController : MonoBehaviour
             MessageBox.instance.ShowMessage("沒有可升級的防禦塔", Color.gray);
         }
     }
-    
+    */
     /// <summary>
     /// ID 10: 暗影交易 - 從黑市抽取三張隨機卡牌，可選擇其中一張購買
     /// </summary>
@@ -238,9 +238,9 @@ public class BlackCardEffectController : MonoBehaviour
     {
         // 這個效果會觸發另一個黑市面板，需要特殊處理
         MessageBox.instance.ShowMessage("暗影交易啟動！獲得額外選擇機會！", Color.purple);
-        
+
         // 可以在這裡觸發BlackMarketManager再次開啟
-        var blackMarket = FindObjectOfType<BlackMarketManager>();
+        var blackMarket = FindFirstObjectByType<BlackMarketManager>();
         if (blackMarket != null)
         {
             StartCoroutine(DelayedBlackMarketOpen(blackMarket, 2f));
@@ -249,6 +249,7 @@ public class BlackCardEffectController : MonoBehaviour
     
     // ===== 輔助方法 =====
     
+    //加入限時效果
     private void AddTimedEffect(BlackCardModel card)
     {
         var effect = new ActiveBlackCardEffect
@@ -300,7 +301,7 @@ public class BlackCardEffectController : MonoBehaviour
             {
                 if (enemy.team == targetTeam)
                 {
-                    enemy.getModel.takeDamage(damagePerSecond, null);
+                    enemy.getModel.takeDamage(damagePerSecond, 999);
                 }
             }
             
@@ -317,7 +318,7 @@ public class BlackCardEffectController : MonoBehaviour
         yield return new WaitForSeconds(delay);
         blackMarket.Open();
     }
-    
+
     private IEnumerator BuffAllUnitsCoroutine(Team team, string effectType, float multiplier, float duration)
     {
         // 簡化版實作 - 收集並應用效果
@@ -338,6 +339,8 @@ public class BlackCardEffectController : MonoBehaviour
         }
     }
     
+    
+    //未來須優化 不該使用FindObjectsByType (太吃效能)
     private List<EntityModel> CollectTeamUnits(Team team)
     {
         List<EntityModel> units = new List<EntityModel>();
