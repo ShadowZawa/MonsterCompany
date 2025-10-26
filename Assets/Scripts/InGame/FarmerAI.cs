@@ -127,7 +127,7 @@ public class FarmerAI : MonoBehaviour
         if (farmTimer >= _model.attackInterval)
         {
             currentTarget.SendMessage("collect", _model.damage, SendMessageOptions.DontRequireReceiver);
-            storage += _model.damage;
+            storage += (int)_model.damage;
             farmTimer = 0f;
         }
         if (storage >= maxStorage)

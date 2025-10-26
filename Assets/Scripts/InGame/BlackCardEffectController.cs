@@ -20,32 +20,6 @@ public class BlackCardEffectController : MonoBehaviour
     
     void Awake()
     {
-        InitializeEffectMethods();
-    }
-    
-    /// <summary>
-    /// 初始化效果方法字典 - 配合現有的 BlackCards.json effectFunction 命名
-    /// </summary>
-    private void InitializeEffectMethods()
-    {
-        effectMethods = new Dictionary<string, CardEffectDelegate>
-        {
-            // 自身增益效果 (type: 0)
-            { "GainRandomResources", GainRandomResources },
-            { "IncreaseTowerDamage", IncreaseTowerDamage },
-            { "SpawnTemporaryUnit", SpawnTemporaryUnit },
-            { "BuffHPReduceAS", BuffHPReduceAS },
-            
-            // 敵方削弱效果 (type: 1)
-            { "InstantKillEliteEnemy", InstantKillEliteEnemy },
-            { "ApplyPoisonToEnemies", ApplyPoisonToEnemies },
-            
-            // 特殊效果 (type: 2)
-            { "TradeHealthForGold", TradeHealthForGold },
-            { "NextCardHalfPrice", NextCardHalfPrice },
-            { "RandomUpgradeOrDestroyTower", RandomUpgradeOrDestroyTower },
-            { "DrawBlackMarketChoices", DrawBlackMarketChoices }
-        };
     }
     
     /// <summary>
@@ -89,20 +63,18 @@ public class BlackCardEffectController : MonoBehaviour
     private void IncreaseTowerDamage(BlackCardModel card)
     {
         // 提升己方防禦塔攻擊力
-        var houses = FindObjectsOfType<HouseController>();
-        var archerTowers = FindObjectsOfType<ArcherTowerController>();
-        var warriorTowers = FindObjectsOfType<WarriorTowerController>();
+        var entities = FindObjectsByType<EntityModel>(FindObjectsSortMode.None);
         
         List<EntityModel> towerModels = new List<EntityModel>();
+
+        foreach (var entity in entities)
+        {
+            if (entity.team == playerTeam && entity.entityType == EntityType.Tower)
+            {
+                towerModels.Add(entity);
+            }
+        }
         
-        foreach (var house in houses)
-            if (house.team == playerTeam) towerModels.Add(house.getModel);
-            
-        foreach (var tower in archerTowers)
-            if (tower.team == playerTeam) towerModels.Add(tower.getModel);
-            
-        foreach (var tower in warriorTowers)
-            if (tower.team == playerTeam) towerModels.Add(tower.getModel);
         
         StartCoroutine(BuffSpecificUnitsCoroutine(towerModels, "damage", 1.15f, card.duration * 60f)); // 2回合 = 120秒
         MessageBox.instance.ShowMessage("己方防禦塔攻擊力提升15%！", Color.cyan);
@@ -133,7 +105,7 @@ public class BlackCardEffectController : MonoBehaviour
         Team enemyTeam = (playerTeam == Team.Blue) ? Team.Red : Team.Blue;
         
         // 尋找敵方單位
-        var enemies = FindObjectsOfType<EnemyAI>();
+    var enemies = FindObjectsByType<EnemyAI>(FindObjectsSortMode.None);
         List<EnemyAI> enemyTargets = new List<EnemyAI>();
         
         foreach (var enemy in enemies)
@@ -147,7 +119,7 @@ public class BlackCardEffectController : MonoBehaviour
         if (enemyTargets.Count > 0)
         {
             var target = enemyTargets[UnityEngine.Random.Range(0, enemyTargets.Count)];
-            target.getModel.takeDamage(9999); // 直接擊殺
+            target.getModel.takeDamage(9999, null); // 直接擊殺
             MessageBox.instance.ShowMessage("暗殺成功！擊殺一名精英敵人！", Color.red);
         }
         else
@@ -178,7 +150,7 @@ public class BlackCardEffectController : MonoBehaviour
             if (unit != null)
             {
                 int damage = Mathf.RoundToInt(unit.maxHealth * 0.1f);
-                unit.takeDamage(damage);
+                unit.takeDamage(damage, null);
             }
         }
         
@@ -218,9 +190,9 @@ public class BlackCardEffectController : MonoBehaviour
     private void RandomUpgradeOrDestroyTower(BlackCardModel card)
     {
         // 收集己方塔
-        var houses = FindObjectsOfType<HouseController>();
-        var archerTowers = FindObjectsOfType<ArcherTowerController>();
-        var warriorTowers = FindObjectsOfType<WarriorTowerController>();
+        var houses = FindObjectsByType<HouseController>(FindObjectsSortMode.None);
+        var archerTowers = FindObjectsByType<ArcherTowerController>(FindObjectsSortMode.None);
+        var warriorTowers = FindObjectsByType<WarriorTowerController>(FindObjectsSortMode.None);
         
         List<GameObject> playerTowers = new List<GameObject>();
         
@@ -298,23 +270,19 @@ public class BlackCardEffectController : MonoBehaviour
     /// </summary>
     private IEnumerator BuffSpecificUnitsCoroutine(List<EntityModel> units, string effectType, float multiplier, float duration)
     {
-        Dictionary<EntityModel, float> originalValues = new Dictionary<EntityModel, float>();
-        
         // 應用效果
         foreach (var unit in units)
         {
             if (unit == null) continue;
-            ApplyUnitBuff(unit, effectType, multiplier, originalValues);
+            ApplyUnitBuff(unit, effectType, multiplier);
         }
-        
         // 等待持續時間
         yield return new WaitForSeconds(duration);
-        
-        // 恢復數值
-        foreach (var kvp in originalValues)
+        // 恢復multiplier
+        foreach (var unit in units)
         {
-            if (kvp.Key != null)
-                RestoreUnitValue(kvp.Key, effectType, kvp.Value);
+            if (unit == null) continue;
+            RestoreUnitBuff(unit, effectType, multiplier);
         }
     }
     
@@ -327,12 +295,12 @@ public class BlackCardEffectController : MonoBehaviour
         
         while (elapsed < duration)
         {
-            var enemies = FindObjectsOfType<EnemyAI>();
+            var enemies = FindObjectsByType<EnemyAI>(FindObjectsSortMode.None);
             foreach (var enemy in enemies)
             {
                 if (enemy.team == targetTeam)
                 {
-                    enemy.getModel.takeDamage(damagePerSecond);
+                    enemy.getModel.takeDamage(damagePerSecond, null);
                 }
             }
             
@@ -354,23 +322,19 @@ public class BlackCardEffectController : MonoBehaviour
     {
         // 簡化版實作 - 收集並應用效果
         List<EntityModel> targetUnits = CollectTeamUnits(team);
-        Dictionary<EntityModel, float> originalValues = new Dictionary<EntityModel, float>();
-        
         // 應用效果
         foreach (var unit in targetUnits)
         {
             if (unit == null) continue;
-            ApplyUnitBuff(unit, effectType, multiplier, originalValues);
+            ApplyUnitBuff(unit, effectType, multiplier);
         }
-        
         // 等待持續時間
         yield return new WaitForSeconds(duration);
-        
-        // 恢復數值
-        foreach (var kvp in originalValues)
+        // 恢復multiplier
+        foreach (var unit in targetUnits)
         {
-            if (kvp.Key != null)
-                RestoreUnitValue(kvp.Key, effectType, kvp.Value);
+            if (unit == null) continue;
+            RestoreUnitBuff(unit, effectType, multiplier);
         }
     }
     
@@ -379,59 +343,55 @@ public class BlackCardEffectController : MonoBehaviour
         List<EntityModel> units = new List<EntityModel>();
         
         // 收集各類型單位
-        foreach (var enemy in FindObjectsOfType<EnemyAI>())
+        foreach (var enemy in FindObjectsByType<EnemyAI>(FindObjectsSortMode.None))
             if (enemy.team == team) units.Add(enemy.getModel);
-            
-        foreach (var farmer in FindObjectsOfType<FarmerAI>())
+
+        foreach (var farmer in FindObjectsByType<FarmerAI>(FindObjectsSortMode.None))
             if (farmer.team == team) units.Add(farmer.getModel);
-            
-        foreach (var soldier in FindObjectsOfType<SoilderAI>())
+
+        foreach (var soldier in FindObjectsByType<SoilderAI>(FindObjectsSortMode.None))
             if (soldier.team == team) units.Add(soldier.GetComponent<EntityModel>());
-            
-        foreach (var archer in FindObjectsOfType<ArcherAI>())
+
+        foreach (var archer in FindObjectsByType<ArcherAI>(FindObjectsSortMode.None))
             if (archer.team == team) units.Add(archer.GetComponent<EntityModel>());
-        
+
         return units;
     }
     
-    private void ApplyUnitBuff(EntityModel unit, string effectType, float multiplier, Dictionary<EntityModel, float> originalValues)
+    private void ApplyUnitBuff(EntityModel unit, string effectType, float multiplier)
     {
         switch (effectType.ToLower())
         {
             case "damage":
-                originalValues[unit] = unit.damage;
-                unit.damage = Mathf.RoundToInt(unit.damage * multiplier);
+                unit.damageMultiplier += multiplier;
                 break;
             case "speed":
-                originalValues[unit] = unit.moveSpeed;
-                unit.moveSpeed *= multiplier;
+                unit.moveSpeedMultiplier += multiplier;
                 break;
             case "health":
-                originalValues[unit] = unit.maxHealth;
-                unit.maxHealth = Mathf.RoundToInt(unit.maxHealth * multiplier);
+                unit.healthMultiplier += multiplier;
                 break;
             case "attackSpeed":
-                originalValues[unit] = unit.attackInterval;
-                unit.attackInterval *= (2f - multiplier); // 攻速倒數關係
+                unit.attackIntervalMultiplier += multiplier;
                 break;
         }
     }
-    
-    private void RestoreUnitValue(EntityModel unit, string effectType, float originalValue)
+
+    private void RestoreUnitBuff(EntityModel unit, string effectType, float multiplier)
     {
         switch (effectType.ToLower())
         {
             case "damage":
-                unit.damage = Mathf.RoundToInt(originalValue);
+                unit.damageMultiplier -= multiplier;
                 break;
             case "speed":
-                unit.moveSpeed = originalValue;
+                unit.moveSpeedMultiplier -= multiplier;
                 break;
             case "health":
-                unit.maxHealth = Mathf.RoundToInt(originalValue);
+                unit.healthMultiplier -= multiplier;
                 break;
             case "attackSpeed":
-                unit.attackInterval = originalValue;
+                unit.attackIntervalMultiplier -= multiplier;
                 break;
         }
     }
