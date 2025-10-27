@@ -60,7 +60,6 @@ public class SoilderAI : MonoBehaviour
         {
             case SoliderState.Idle:
                 _animator.Play("Idle");
-                // 可擴充: 站立動畫
                 break;
             case SoliderState.Patrol:
                 Patrol();
@@ -76,7 +75,6 @@ public class SoilderAI : MonoBehaviour
                 ChaseEnemy();
                 break;
             case SoliderState.Attack:
-                _animator.Play("Attack 1");
                 AttackEnemy();
                 break;
         }
@@ -221,13 +219,38 @@ public class SoilderAI : MonoBehaviour
         attackTimer += Time.deltaTime;
         if (attackTimer >= _model.attackInterval)
         {
-            GetComponent<AudioSource>().clip = attackAudioClip;
-            GetComponent<AudioSource>().Play();
-            // 假設敵人有 TakeDamage(int) 方法
-            currentTarget.SendMessage("takeDamage", _model.damage, SendMessageOptions.DontRequireReceiver);
+            // 只在攻擊間隔到時觸發動畫，並延遲呼叫 OnAttackHit 以模擬動畫出手時機
+            _animator.Play("Attack 1");
+            StartCoroutine(AttackHitDelayCoroutine());
             attackTimer = 0f;
         }
+
+    // 攻擊動畫出手時機延遲呼叫
+    IEnumerator AttackHitDelayCoroutine()
+    {
+    // 根據動畫長度調整延遲，假設出手在動畫 0.4 秒時
+    yield return new WaitForSeconds(0.4f);
+    OnAttackHit();
+    // 傷害造成後自動切回Idle，避免動畫重複撥放
+    _animator.Play("Idle");
+    }
     }
 
-
+    // 動畫事件：在攻擊動畫出手時呼叫
+    public void OnAttackHit()
+    {
+        if (currentTarget == null) return;
+        // 目標已被消滅或不存在
+        if (!currentTarget.activeInHierarchy) return;
+        float dist = Vector3.Distance(transform.position, currentTarget.transform.position);
+        if (dist > _towerController.getModel.attackRange) return;
+        // 可擴充：檢查目標是否有生命值 <= 0
+        var audio = GetComponent<AudioSource>();
+        if (audio && attackAudioClip)
+        {
+            audio.clip = attackAudioClip;
+            audio.Play();
+        }
+        currentTarget.SendMessage("takeDamage", _model.damage, SendMessageOptions.DontRequireReceiver);
+    }
 }

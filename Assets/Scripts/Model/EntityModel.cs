@@ -40,8 +40,11 @@ public class EntityModel : MonoBehaviour
     {
         currentHealth = maxHealth;
     }
-
-    public void takeDamage(int damage, int? piercing)
+    public void takeDamage(int damage)
+    {
+        takeDamage(damage, 1);
+    }
+    public void takeDamage(int damage, int? piercing=1)
     {
         if (damage < 0)
         {
@@ -51,9 +54,11 @@ public class EntityModel : MonoBehaviour
         float defRemain = 1.0f;
         if (piercing.HasValue)
         {
-            defRemain = Mathf.Max(0, piercing.Value - defense);
+            defRemain = Mathf.Max(0, defense- piercing.Value);
             if (defRemain != 0)
             {
+                defRemain = (defRemain / defense);
+                defRemain = Mathf.Min(1.0f, defRemain);
                 defRemain = 1 - (defRemain / defense);
             }
         }
