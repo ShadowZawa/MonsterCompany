@@ -1,5 +1,9 @@
 # 《Monster Company》遊戲設計文件 (GDD)
 
+
+#
+#   已暫停更新 由新的Monster Company : Reborn取代
+#
 ---
 
 ## 🧱 基本資訊
